@@ -210,12 +210,24 @@
 						RelativePath=".\_Source_my\Source\CFSW.h"
 						>
 					</File>
+					<File
+						RelativePath=".\_Source_my\Source\Spindle.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="Cpp"
 					>
 					<File
 						RelativePath=".\_Source_my\Source\CFSW.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\_Source_my\Source\CvtSpindle.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\_Source_my\Source\Spindle.cpp"
 						>
 					</File>
 				</Filter>
@@ -319,6 +331,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\_Source_support\HEADER\COM\modbusrtu.h"
+						>
+					</File>
+					<File
 						RelativePath=".\_Source_support\HEADER\COM\plc_standard_class.h"
 						>
 					</File>
@@ -375,6 +391,10 @@
 			<Filter
 				Name="CPP"
 				>
+				<File
+					RelativePath=".\_Source_support\CPP\modbusrtu.cpp"
+					>
+				</File>
 				<File
 					RelativePath=".\_Source_support\CPP\plc_standard_class.cpp"
 					>
