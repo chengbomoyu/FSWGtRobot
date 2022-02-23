@@ -57,52 +57,80 @@ short CvtSpindle::SpindleConnect(){
 	return 0;
 }
 short CvtSpindle::SpindleServorStatusSet(short mStatus){
-	unsigned short data_on = 0x0001;
-	unsigned short data_off = 0x0000;
-	SpindleStatus = mStatus;
-	if(SpindleStatus==2){  
-		CvtSetDirectionSModbusRtuCmdEx.p_data = &data_on;
+	if(SpindleComStatus == 0){
+		return 1;
 	}
-	else if(SpindleStatus==3){//主轴关闭
-		CvtSetDirectionSModbusRtuCmdEx.p_data = &data_off;
+	else if(SpindleComStatus == 1){
+		unsigned short data_on = 0x0001;
+		unsigned short data_off = 0x0000;
+		SpindleStatus = mStatus;
+		if(SpindleStatus==2){  
+			CvtSetDirectionSModbusRtuCmdEx.p_data = &data_on;
+		}
+		else if(SpindleStatus==3){//主轴关闭
+			CvtSetDirectionSModbusRtuCmdEx.p_data = &data_off;
+		}
+		CvtModebusRtu.addCmdEx(&CvtSetDirectionSModbusRtuCmdEx);
+		return 0;
 	}
-	CvtModebusRtu.addCmdEx(&CvtSetDirectionSModbusRtuCmdEx);
 	return 0;
 }
 
 short CvtSpindle::SpindleGetRealSpeed(int& mRealSpeed){
-	if(SpindleDirection == 1)
-		SpindleSpeedReal = CvtSpindleModebusRtuSpeedReal * 10;
-	else{
-		SpindleSpeedReal = -(65536 - CvtSpindleModebusRtuSpeedReal) * 10;
-		if (SpindleSpeedReal == -655360)
-			SpindleSpeedReal = 0;
+	if(SpindleComStatus == 0){
+		return 1;
 	}
-	mRealSpeed = SpindleSpeedReal;
-	CvtSpindleModebusRtuSpeedReal = 0x0001;
-	CvtGetSpeedSModbusRtuCmdEx.p_data = &CvtSpindleModebusRtuSpeedReal;
-	CvtModebusRtu.addCmdEx(&CvtGetSpeedSModbusRtuCmdEx);
+	else if(SpindleComStatus == 1){
+		if(SpindleDirection == 1)
+			SpindleSpeedReal = CvtSpindleModebusRtuSpeedReal * 10;
+		else{
+			SpindleSpeedReal = -(65536 - CvtSpindleModebusRtuSpeedReal) * 10;
+			if (SpindleSpeedReal == -655360)
+				SpindleSpeedReal = 0;
+		}
+		mRealSpeed = SpindleSpeedReal;
+		CvtSpindleModebusRtuSpeedReal = 0x0001;
+		CvtGetSpeedSModbusRtuCmdEx.p_data = &CvtSpindleModebusRtuSpeedReal;
+		CvtModebusRtu.addCmdEx(&CvtGetSpeedSModbusRtuCmdEx);
+		return 0;
+	}
 	return 0;
 }
 
 short CvtSpindle::SpindleSetSpeed(int mSetSpeed){
-	unsigned short speed_hz = mSetSpeed;
-	SpindleSpeedSet=mSetSpeed;
-	CvtSetSpeedSModbusRtuCmdEx.p_data = &speed_hz;
-	CvtModebusRtu.addCmdEx(&CvtSetSpeedSModbusRtuCmdEx);
+	if(SpindleComStatus == 0){
+		return 1;
+	}
+	else if(SpindleComStatus == 1){
+		unsigned short speed_hz = abs(mSetSpeed);
+		SpindleSpeedSet=mSetSpeed;
+		CvtSetSpeedSModbusRtuCmdEx.p_data = &speed_hz;
+		CvtModebusRtu.addCmdEx(&CvtSetSpeedSModbusRtuCmdEx);
+
+		if(SpindleSpeedSet<  0) SpindleSetDirection(0);
+		if(SpindleSpeedSet>= 0)	SpindleSetDirection(1);
+
+		return 0;
+	}
 	return 0;
 }
 
 short CvtSpindle::SpindleSetDirection(short mDirection){
-	unsigned short data_right = 0x0000;
-	unsigned short data_left = 0x0001;
-	SpindleDirection = mDirection;
-	if(SpindleDirection==1){ //顺时针旋转
-		CvtSetDirectionSModbusRtuCmdEx.p_data = &data_right;
-	} 
-	else if(SpindleDirection==-1){//逆时针旋转
-		CvtSetDirectionSModbusRtuCmdEx.p_data = &data_left;
+	if(SpindleComStatus == 0){
+		return 1;
 	}
-	CvtModebusRtu.addCmdEx(&CvtSetDirectionSModbusRtuCmdEx);
+	else if(SpindleComStatus == 1){
+		unsigned short data_right = 0x0000;
+		unsigned short data_left = 0x0001;
+		SpindleDirection = mDirection;
+		if(SpindleDirection==1){ //顺时针旋转
+			CvtSetDirectionSModbusRtuCmdEx.p_data = &data_right;
+		} 
+		else if(SpindleDirection==-1){//逆时针旋转
+			CvtSetDirectionSModbusRtuCmdEx.p_data = &data_left;
+		}
+		CvtModebusRtu.addCmdEx(&CvtSetDirectionSModbusRtuCmdEx);
+		return 0;
+	}
 	return 0;
 }

@@ -1,5 +1,5 @@
-#ifndef FSW_INTERFACE_H
-#define FSW_INTERFACE_H
+#ifndef OFFSET_INTERFACE_H
+#define OFFSET_INTERFACE_H
 #include "qstring.h"
 #define NULL 0
 
@@ -50,18 +50,7 @@ void BR_PlcLoopRun_DoOffset();//进行动态偏移
 
 void BR_RsiZeroRest();
 
-void bci_go_spindle_status_on();             	   //开启主轴伺服
-void bci_go_spindle_status_off();            	   //关闭主轴伺服
-void bci_go_spindle_on();                    	   //开启主轴运动
-void bci_go_spindle_off();                   	   //停止主轴运动
-double bci_go_spindle_speed_real_get();      	   //获取主轴实时速度
-void bci_go_spindle_speed_set(int speed);          //设置主轴转速
-void bci_go_spindle_speed_up100();           	   //设置主轴速度+100
-void bci_go_spindle_speed_down100();	      	   //设置主轴速度-100
 
-bool BR_SynSpindleServo();//主轴使能
-//主轴复位
-bool BR_SynSpindleOnOff();//主轴开启
 //主轴停止
 bool BR_SynOffsetOnOff();//偏移开启
 //偏移关闭
@@ -70,4 +59,4 @@ bool BR_SynForceOnOff();//力控开启
 int BR_SynSpindleRMP();//同步设定速度
 int BR_SynForce();//同步设定压力
 
-#endif // FSW_INTERFACE_H
+#endif // OFFSET_INTERFACE_H
