@@ -15,20 +15,23 @@
 
 FSW::FSW(QWidget *parent){
 	ui.setupUi(this);
+	BR_RsiInit();
+	BGDCvtSpindleInit();
+	FSWHmiVarInit();
+	
 	ConnectSpindleSignalSlots();
 	ConnectOffsetSignalSlots();
-
-	FSWHmiVarInit();
 	BR_RsiFswMartixUpdate(hmi_fwsmartix);
-	BGDCvtSpindleInit();
+
 	RegisterPLCLoopRun();
 }
 FSW::~FSW(){
+	BR_RsiDeinit();
 	BGDCvtSpindleDeInit();
 }
 void FSW::FSWHmiVarInit(){
-	SpindleSetSpeed = 0;//设定的主轴转速
-	SpindleGetSpeed = 0;//获取的主轴转速
+	SpindleSpeedSet = 0;//设定的主轴转速
+	SpindleSpeedGet = 0;//获取的主轴转速
 	SpindleGetStatus = 0;//获取的主轴状态
 	SpindleSetStatus = 0;//设定的主轴状态
 
@@ -40,13 +43,13 @@ void FSW::FSWHmiVarInit(){
 	OffsetManSumZ = 0;  //手动修正Z总量
 	OffsetManStep = 0;  //手动修正步距
 
-	hmi_sri_correct_sum_z = 0;      //力控Z方向修正总量
-	hmi_sri_Fz = 0;                 //当前的顶锻力
-	hmi_sri_FzSet = 4500;           //设定的顶锻力
+	SriCorrectSumZ = 0;      //力控Z方向修正总量
+	SriFzNow = 0;                 //当前的顶锻力
+	SriFzSet = 4500;           //设定的顶锻力
 	hmi_sri_status = false;         //修正状态   0关闭修正 1开启修正
 	hmi_sri_connect_status = false; //连接状态   0关闭连接 1开启连接
 	hmi_sri_ask_status = false;     //是否开启问询
-	hmi_sri_ask_connect_status = 0; //问询连接状态
+	SriConnectStatusNow = 0; //问询连接状态
 
 	/********************************************/
 	hmi_fwsmartix[1][1] = 0.8;
@@ -125,13 +128,13 @@ void FSW::keyPressEvent(QKeyEvent *event){
 				BR_RsiManOffsetZ(1);
 			break;
 		case Qt::Key_7:
-			hmi_sri_FzSet = hmi_sri_FzSet + 100;
-			BR_RsiSriSetFz(hmi_sri_FzSet);
+			SriFzSet = SriFzSet + 100;
+			BR_RsiSriSetFz(SriFzSet);
 			break;
 		case Qt::Key_4:
-			hmi_sri_FzSet = hmi_sri_FzSet - 100;
-			if(hmi_sri_FzSet <= 0) hmi_sri_FzSet = 0;
-			BR_RsiSriSetFz(hmi_sri_FzSet);	
+			SriFzSet = SriFzSet - 100;
+			if(SriFzSet <= 0) SriFzSet = 0;
+			BR_RsiSriSetFz(SriFzSet);	
 			break;
 		case Qt::Key_0:
 			OffsetManStep = OffsetManStep - 0.1;
@@ -143,12 +146,12 @@ void FSW::keyPressEvent(QKeyEvent *event){
 			BR_RsiSetOffsetStep(OffsetManStep);
 			break;
 		case Qt::Key_8:
-			this->SpindleSetSpeed = SpindleSetSpeed + 100;
-			BGDCvtSpindleSetSpeed(SpindleSetSpeed);
+			this->SpindleSpeedSet = SpindleSpeedSet + 100;
+			BGDCvtSpindleSetSpeed(SpindleSpeedSet);
 			break;
 		case Qt::Key_5:
-			this->SpindleSetSpeed = SpindleSetSpeed - 100;
-			BGDCvtSpindleSetSpeed(SpindleSetSpeed);
+			this->SpindleSpeedSet = SpindleSpeedSet - 100;
+			BGDCvtSpindleSetSpeed(SpindleSpeedSet);
 			break;
 	}
 }
@@ -202,11 +205,12 @@ void FSW::SlowTimerLoop(){
 
 void FSW::FastTimerLoop(){
 	GetSpindleParameters();
-	GetOfficeParameters();
+	GetOffsetParameters();
 }
 void FSW::GetSpindleParameters(){
-	BGDCvtSpindleGetSpeed(SpindleGetSpeed);
-	SpindleSetSpeed = SpindleSetSpeed;
+	BGDCvtSpindleGetSpeed(SpindleSpeedGet);
+
+	SpindleSpeedSet = SpindleSpeedSet;
 	SpindleGetStatus = SpindleSetStatus;
 	switch(SpindleGetStatus){
 		case 0:	break;
@@ -214,32 +218,35 @@ void FSW::GetSpindleParameters(){
 		case 2:	ui.mlabel_spindle_status->setText("开启"); break;
 		case 3:	ui.mlabel_spindle_status->setText("关闭"); break;
 	}
-	ui.mlcdnumber_spindle_set->display(SpindleSetSpeed);
-	ui.mlcdnumber_spindle_real->display(SpindleGetSpeed);
+	ui.mlcdnumber_spindle_set->display(SpindleSpeedSet);
+	ui.mlcdnumber_spindle_real->display(SpindleSpeedGet);
 }
-void FSW::GetOfficeParameters(){
-	ui.mlcdnumber_rsi_man_step->display(OffsetManStep);
-	ui.mlcdnumber_sri_fzsetting->display(hmi_sri_FzSet);
-
+void FSW::GetOffsetParameters(){
 	OffsetSumZ = BR_RsiRreadOffsetZ();
 	OffsetSumY = BR_RsiRreadOffsetY();
-	OffsetManSumY = BR_RsiReadManOffsetY();
-	OffsetManSumZ = BR_RsiReadManOffsetZ();
+	OffsetManSumY =  BR_RsiReadManOffsetY();
+	OffsetManSumZ =  BR_RsiReadManOffsetZ();
+	SriCorrectSumZ = BR_RsiRreadSriOffsetZ();
+	SriConnectStatusNow = BR_RsiSriReadConnectStatus();
+	SriFzNow = BR_RsiReadSriFz();
+	SriFzSet = SriFzSet;
+
+	switch (SriConnectStatusNow){
+		case 1:  ui.mlabel_sri_status_connect->setText("已连接");	 break;
+		case 2:  ui.mlabel_sri_status_connect->setText("正在连接"); break;
+		default: ui.mlabel_sri_status_connect->setText("未连接");   break;
+	}
+
+	ui.mlcdnumber_sri_Fz->display(SriFzNow);
+	ui.mlcdnumber_sri_fzsetting->display(SriFzSet);
+
 	ui.lcdnumber_rsi_dy->display(OffsetSumY);
 	ui.lcdnumber_rsi_dz->display(0-OffsetSumZ);
 	ui.mlcdnumber_rsi_man_sum_z->display(0-OffsetManSumZ);
 	ui.mlcdnumber_rsi_man_sum_y->display(OffsetManSumY);
+	ui.mlcdnumber_sri_correct_sum_z->display(0-SriCorrectSumZ);
 
-	hmi_sri_ask_connect_status = BR_RsiSriReadConnectStatus();
-	if(hmi_sri_ask_connect_status == 1)      ui.mlabel_sri_status_connect->setText("已连接");
-	else if(hmi_sri_ask_connect_status == 2) ui.mlabel_sri_status_connect->setText("正在连接");
-	else		                             ui.mlabel_sri_status_connect->setText("未连接");
-
-	this->hmi_sri_Fz = BR_RsiReadSriFz();
-	ui.mlcdnumber_sri_Fz->display(hmi_sri_Fz);
-
-	this->hmi_sri_correct_sum_z = BR_RsiRreadSriOffsetZ();
-	ui.mlcdnumber_sri_correct_sum_z->display(0-hmi_sri_correct_sum_z);
+	ui.mlcdnumber_rsi_man_step->display(OffsetManStep);
 }
 
 QString FSW::getFrameName(){
@@ -272,40 +279,40 @@ void FSW::onpbtnclicked_mpushbutton_spindle_off(){
 	BGDCvtSpindleStatusSet(SpindleSetStatus);
 }
 void FSW::onpbtnclicked_mpushbutton_spindle_speed_up100(){
-	SpindleSetSpeed = SpindleSetSpeed+100;
-	BGDCvtSpindleSetSpeed(SpindleSetSpeed);
+	SpindleSpeedSet = SpindleSpeedSet+100;
+	BGDCvtSpindleSetSpeed(SpindleSpeedSet);
 }
 void FSW::onpbtnclicked_mpushbutton_spindle_speed_down100(){
-	SpindleSetSpeed = SpindleSetSpeed-100;
-	BGDCvtSpindleSetSpeed(SpindleSetSpeed);
+	SpindleSpeedSet = SpindleSpeedSet-100;
+	BGDCvtSpindleSetSpeed(SpindleSpeedSet);
 }
 void FSW::oncheckboxclicked_checkbox_rsi_on(){
-	BR_RsiVarRest();
 	OffsetStatus = true;
+
 	ui.checkbox_rsi_off->setCheckState(Qt::Unchecked);
-	BR_RsiSetStatus(OffsetStatus);
-	/******************************************************/
 	ui.mcheckbox_sri_status_on->setEnabled(true);
 	ui.mcheckbox_sri_status_off->setEnabled(true);
-	/******************************************************/
 	ui.mpushbutton_rsi_man_y_up->setEnabled(true);
 	ui.mpushbutton_rsi_man_y_down->setEnabled(true);
 	ui.mpushbutton_rsi_man_z_up->setEnabled(true);
 	ui.mpushbutton_rsi_man_z_down->setEnabled(true);
+
+	BR_RsiVarRest();
+	BR_RsiSetStatus(OffsetStatus);
 }
 
 void FSW::oncheckboxclicked_checkbox_rsi_off(){
 	OffsetStatus = false;
+
 	ui.checkbox_rsi_on->setCheckState(Qt::Unchecked);
-	BR_RsiSetStatus(OffsetStatus);
-	/******************************************************/
 	ui.mcheckbox_sri_status_on->setEnabled(false);
 	ui.mcheckbox_sri_status_off->setEnabled(false);
-	/******************************************************/
 	ui.mpushbutton_rsi_man_y_up->setEnabled(false);
 	ui.mpushbutton_rsi_man_y_down->setEnabled(false);
 	ui.mpushbutton_rsi_man_z_up->setEnabled(false);
 	ui.mpushbutton_rsi_man_z_down->setEnabled(false);
+
+	BR_RsiSetStatus(OffsetStatus);
 }
 
 void FSW::onpbtnclicked_mpushbutton_rsi_man_step_up(){
@@ -374,13 +381,13 @@ void FSW::oncheckboxclicked_mcheckbox_sir_status_off(){
 }
 
 void FSW::onpbtnclicked_mpushbutton_sri_fzsetting_up(){
-	hmi_sri_FzSet = hmi_sri_FzSet + 100;
-	BR_RsiSriSetFz(hmi_sri_FzSet);
+	SriFzSet = SriFzSet + 100;
+	BR_RsiSriSetFz(SriFzSet);
 }
 void FSW::onpbtnclicked_mpushbutton_sri_fzsetting_down(){
-	hmi_sri_FzSet = hmi_sri_FzSet - 100;
-	if(hmi_sri_FzSet <= 0) hmi_sri_FzSet = 0;
-	BR_RsiSriSetFz(hmi_sri_FzSet);
+	SriFzSet = SriFzSet - 100;
+	if(SriFzSet <= 0) SriFzSet = 0;
+	BR_RsiSriSetFz(SriFzSet);
 }
 
 Q_EXPORT_PLUGIN2("RobotHmi",FSW);

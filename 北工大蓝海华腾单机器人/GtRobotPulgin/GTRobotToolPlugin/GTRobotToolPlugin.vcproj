@@ -203,41 +203,49 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="OffsetInterFace"
+					>
+					<File
+						RelativePath=".\_Source_my\Interface\OffsetInterface.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\_Source_my\Interface\OffsetInterface.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Source"
 				>
 				<Filter
-					Name="Header"
+					Name="Offset"
 					>
 					<File
-						RelativePath=".\_Source_my\Source\CFSW.h"
+						RelativePath=".\_Source_my\Source\Offset.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\_Source_my\Source\Offset.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Spindle"
+					>
+					<File
+						RelativePath=".\_Source_my\Source\CvtSpindle.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\_Source_my\Source\Spindle.cpp"
 						>
 					</File>
 					<File
 						RelativePath=".\_Source_my\Source\Spindle.h"
 						>
 					</File>
-				</Filter>
-				<Filter
-					Name="Cpp"
-					>
-					<File
-						RelativePath=".\_Source_my\Source\CFSW.cpp"
-						>
-					</File>
-					<Filter
-						Name="Spindle"
-						>
-						<File
-							RelativePath=".\_Source_my\Source\CvtSpindle.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\_Source_my\Source\Spindle.cpp"
-							>
-						</File>
-					</Filter>
 				</Filter>
 			</Filter>
 			<Filter

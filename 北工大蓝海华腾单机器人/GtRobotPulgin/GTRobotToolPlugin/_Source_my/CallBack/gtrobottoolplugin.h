@@ -18,15 +18,15 @@ Q_OBJECT
 public:
 	FSW(QWidget *parent = 0);
 	~FSW();
-	void FSWHmiVarInit();
-	void keyPressEvent(QKeyEvent *event);
+	void FSWHmiVarInit();				 //用于HMI变量的初始化
+	void keyPressEvent(QKeyEvent *event);//键盘事件
 public:
-	void RegisterPLCLoopRun();
-	void ConnectSpindleSignalSlots();
-	void ConnectOffsetSignalSlots();
+	void RegisterPLCLoopRun();		  //注册PLC函数
+	void ConnectSpindleSignalSlots();//注册电主轴的回调函数
+	void ConnectOffsetSignalSlots(); //注册动态偏移的回调函数
 public:
-	void GetSpindleParameters();
-	void GetOfficeParameters();
+	void GetSpindleParameters();//上行同步主轴信息
+	void GetOffsetParameters(); //上行同步动态偏移信息
 public slots:
 		void onpbpbSpindleConnect();
 		void onpbtnclicked_mpushbutton_spindle_on();
@@ -67,8 +67,8 @@ protected:
 private:
 	Ui::FSWClass ui;
 private:
-	int SpindleSetSpeed;   //设定的主轴转速
-	int SpindleGetSpeed;   //获取的主轴转速
+	int SpindleSpeedSet;   //设定的主轴转速
+	int SpindleSpeedGet;   //获取的主轴转速
 	short SpindleGetStatus;//获取的主轴状态
 	short SpindleSetStatus;//设定的主轴状态
 
@@ -80,15 +80,15 @@ private:
 	double OffsetManSumZ;  //手动修正Z总量
 	double OffsetManStep;  //手动修正步距
 
-	double hmi_sri_correct_sum_z;      //力控Z方向修正总量
-	double hmi_sri_Fz;                 //当前的顶锻力
-	double hmi_sri_FzSet;              //设定的顶锻力
+	double SriCorrectSumZ;      //力控Z方向修正总量
+	double SriFzNow;                 //当前的顶锻力
+	double SriFzSet;              //设定的顶锻力
 	bool   hmi_sri_status;             //修正状态   0关闭修正 1开启修正
 	bool   hmi_sri_connect_status;     //连接状态   0关闭连接 1开启连接
 	bool   hmi_sri_ask_status;         //是否开启问询
-	short  hmi_sri_ask_connect_status; //问询连接状态
+	short  SriConnectStatusNow; //问询连接状态
 
-	double hmi_fwsmartix[11][7];
+	double hmi_fwsmartix[11][7];		//力位混合控制矩阵
 };
 
 #endif // FSW_H
