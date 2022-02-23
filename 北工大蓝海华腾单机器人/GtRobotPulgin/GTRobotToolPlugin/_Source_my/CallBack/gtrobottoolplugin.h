@@ -18,8 +18,12 @@ Q_OBJECT
 public:
 	FSW(QWidget *parent = 0);
 	~FSW();
+	void FSWHmiVarInit();
 public:
+	void RegisterPLCLoopRun();
 	void ConnectSpindleSignalSlots();
+public:
+	void GetSpindleParameters();
 public slots:
 		void onpbpbSpindleConnect();
 		void onpbtnclicked_mpushbutton_spindle_on();
@@ -38,6 +42,11 @@ protected:
 	void setPermission(short type);
 private:
 	Ui::FSWClass ui;
+public:
+	int SpindleSetSpeed;//设定的主轴转速
+	int SpindleGetSpeed;//获取的主轴转速
+	short SpindleGetStatus;//获取的主轴状态
+	short SpindleSetStatus;//设定的主轴状态
 };
 
 #endif // RSI_H

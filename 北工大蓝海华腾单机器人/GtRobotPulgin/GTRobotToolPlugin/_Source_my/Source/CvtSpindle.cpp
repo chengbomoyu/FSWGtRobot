@@ -17,7 +17,7 @@ CvtSpindle::CvtSpindle(){
 	SpindleSpeedReal = 0;      //主轴实时速度
 	SpindleAccaccelation = -1; //主轴加速度
 	SpindleDecelation = -1;	   //主轴减速度
-	SpindleDirection -1;       //主轴方向,-1逆时针 0默认  1顺时针
+	SpindleDirection = -1;       //主轴方向,-1逆时针 0默认  1顺时针
 
 	CvtGetSpeedSModbusRtuCmdEx.is_finish = &CvtGetSpeedIsFinish;
 	CvtGetSpeedSModbusRtuCmdEx.is_timeout = &CvtGetSpeedTimeout;
@@ -63,7 +63,7 @@ short CvtSpindle::SpindleServorStatusSet(short mStatus){
 	if(SpindleStatus==2){  
 		CvtSetDirectionSModbusRtuCmdEx.p_data = &data_on;
 	}
-	else if(SpindleStatus==3){                                          //主轴关闭
+	else if(SpindleStatus==3){//主轴关闭
 		CvtSetDirectionSModbusRtuCmdEx.p_data = &data_off;
 	}
 	CvtModebusRtu.addCmdEx(&CvtSetDirectionSModbusRtuCmdEx);

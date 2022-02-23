@@ -82,7 +82,7 @@
             </font>
            </property>
            <property name="text">
-            <string>未连接</string>
+            <string>关闭</string>
            </property>
           </widget>
          </item>

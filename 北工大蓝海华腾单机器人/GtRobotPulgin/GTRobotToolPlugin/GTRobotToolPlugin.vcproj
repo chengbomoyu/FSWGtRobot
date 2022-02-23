@@ -191,14 +191,18 @@
 			<Filter
 				Name="Interface"
 				>
-				<File
-					RelativePath=".\_Source_my\Interface\fsw_interface.cpp"
+				<Filter
+					Name="SpindleInterFace"
 					>
-				</File>
-				<File
-					RelativePath=".\_Source_my\Interface\fsw_interface.h"
-					>
-				</File>
+					<File
+						RelativePath=".\_Source_my\Interface\SpindleInterface.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\_Source_my\Interface\SpindleInterface.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Source"
@@ -222,14 +226,18 @@
 						RelativePath=".\_Source_my\Source\CFSW.cpp"
 						>
 					</File>
-					<File
-						RelativePath=".\_Source_my\Source\CvtSpindle.cpp"
+					<Filter
+						Name="Spindle"
 						>
-					</File>
-					<File
-						RelativePath=".\_Source_my\Source\Spindle.cpp"
-						>
-					</File>
+						<File
+							RelativePath=".\_Source_my\Source\CvtSpindle.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\_Source_my\Source\Spindle.cpp"
+							>
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 			<Filter
