@@ -247,6 +247,22 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="Sensor"
+					>
+					<Filter
+						Name="SRI"
+						>
+						<File
+							RelativePath=".\_Source_my\Source\SRI.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\_Source_my\Source\SRI.h"
+							>
+						</File>
+					</Filter>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="CallBack"
