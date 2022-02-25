@@ -84,6 +84,7 @@ short SRISensor::SetSriFzZero(float& FzZeroData){
 		SriDataZero[2] =  *((float*)(&dataint));
 		FzZeroData = SriDataZero[2];
 	}
+
 	return 0;
 }
 

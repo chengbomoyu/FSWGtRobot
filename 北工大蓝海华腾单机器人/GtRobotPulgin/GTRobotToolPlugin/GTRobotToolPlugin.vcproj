@@ -230,6 +230,18 @@
 						RelativePath=".\_Source_my\Source\Offset.h"
 						>
 					</File>
+					<Filter
+						Name="OffsetEx"
+						>
+						<File
+							RelativePath=".\_Source_my\Source\OffsetEx.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\_Source_my\Source\OffsetEx.h"
+							>
+						</File>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="Spindle"
@@ -259,6 +271,18 @@
 						</File>
 						<File
 							RelativePath=".\_Source_my\Source\SRI.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="HMI"
+						>
+						<File
+							RelativePath=".\_Source_my\Source\Manual.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\_Source_my\Source\Manual.h"
 							>
 						</File>
 					</Filter>
