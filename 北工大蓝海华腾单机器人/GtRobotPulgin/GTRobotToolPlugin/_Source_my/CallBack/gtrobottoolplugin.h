@@ -81,14 +81,14 @@ private:
 	double OffsetManStep;  //手动修正步距
 
 	double SriCorrectSumZ;      //力控Z方向修正总量
-	double SriFzNow;                 //当前的顶锻力
-	double SriFzSet;              //设定的顶锻力
-	bool   hmi_sri_status;             //修正状态   0关闭修正 1开启修正
-	bool   hmi_sri_connect_status;     //连接状态   0关闭连接 1开启连接
-	bool   hmi_sri_ask_status;         //是否开启问询
-	short  SriConnectStatusNow; //问询连接状态
+	double SriFzNow;            //当前的顶锻力
+	double SriFzSet;            //设定的顶锻力
+	bool   SriOffsetStatus;             //修正状态   0关闭修正 1开启修正
+	bool   SriConnectSetStatus;     //连接状态   0关闭连接 1开启连接
+	bool   SriAskStatus;         //是否开启问询
+	short  SriConnectStatusNow;        //问询连接状态
 
-	double hmi_fwsmartix[11][7];		//力位混合控制矩阵
+	double hmi_fwsmartix[11][7];	   //力位混合控制矩阵
 };
 
 #endif // FSW_H

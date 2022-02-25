@@ -40,10 +40,13 @@ public:
 public:
 	short   SriConnect();
 	short   SriDisconnect();
-	short   SetSriFzZero(float& FzData);
+	short   SetSriFzZero();
+	short   SetSriAskStatus(bool status);
 	short   GetSriFzData(float& FzZeroData);
 	short   GetSriClientStatus(short& status);
-	short   GetSriConnectStatus(short& status,float MeasureValue);
+	short   GetSriConnectStatus(short& status);
+
+	short   SriParameterReset();
 
 };
 

@@ -21,12 +21,15 @@ public:
 	double* ManOffsetRela;      //本周期偏移的量[8]
 
 	short   ManualSetStatus(bool status);
+	short   ManualSetStep(double step);
 	short   ManSetOffsetY(short Dir);
 	short   ManSetOffsetZ(short Dir);
 	short   ManGetOffsetYSum(double& value);
 	short   ManGetOffsetZSum(double& value);
 	short   ManGetOffsetY(double& value);
 	short   ManGetOffsetZ(double& value);
+
+	short ManOffsetParameterReset();
 };
 
 #endif // MANUAL_H

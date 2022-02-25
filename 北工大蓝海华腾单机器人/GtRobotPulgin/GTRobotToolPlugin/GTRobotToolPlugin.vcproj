@@ -214,6 +214,18 @@
 						RelativePath=".\_Source_my\Interface\OffsetInterface.h"
 						>
 					</File>
+					<Filter
+						Name="OffsetInterFaceEx"
+						>
+						<File
+							RelativePath=".\_Source_my\Interface\OffsetInterfaceEx.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\_Source_my\Interface\OffsetInterfaceEx.h"
+							>
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 			<Filter

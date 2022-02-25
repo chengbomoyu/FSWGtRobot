@@ -16,13 +16,18 @@ public:
 	~OffsetEx();
 public:
 	bool    OffsetStatus;     //动态偏移开关
-	double* OffsetSumValue;  //修正总量[8]
+	double* OffsetSumValue;   //修正总量[8]
 public:
 	SRISensor* mSRISensor;
 	ManualOffset* mManualOffset;
 public:
 	short   OffsetStatusSet(bool status);
-	short   OffsetDoOffset();    
+	short   OffsetDoOffset();
+
+	short   GetOffsetSumY(double& value);
+	short   GetOffsetSumZ(double& value);
+
+	short   OffsetParamaterRest();
 };
 
 #endif // OFFSETEX_H

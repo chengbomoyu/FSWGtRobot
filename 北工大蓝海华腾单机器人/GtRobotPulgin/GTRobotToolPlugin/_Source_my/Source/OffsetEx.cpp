@@ -11,9 +11,6 @@
 
 OffsetEx::OffsetEx(){
 	OffsetSumValue = new double[8];
-
-	mSRISensor = new SRISensor();
-	mManualOffset = new ManualOffset();
 }
 
 OffsetEx::~OffsetEx(){
@@ -40,6 +37,22 @@ short OffsetEx::OffsetDoOffset(){
 	return 0;
 }
 
+short OffsetEx::OffsetParamaterRest(){
+	for (int i=0;i<8;i++){
+		OffsetSumValue[i] = 0;
+	}
+	mSRISensor->SriParameterReset();
+	mManualOffset->ManOffsetParameterReset();
+	return 0;
+}
 
+short OffsetEx::GetOffsetSumY(double& value){
+	value = OffsetSumValue[1];
+	return 0;
+}
+short OffsetEx::GetOffsetSumZ(double& value){
+	value = OffsetSumValue[2];
+	return 0;
+}
 
      	 			

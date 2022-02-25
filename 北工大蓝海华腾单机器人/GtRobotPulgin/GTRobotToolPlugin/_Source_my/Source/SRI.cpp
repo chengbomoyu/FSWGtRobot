@@ -47,9 +47,9 @@ short SRISensor::GetSriClientStatus(short& status){
 	return 0;
 }
 
-short  SRISensor::GetSriConnectStatus(short& status,float MeasureValue){
+short  SRISensor::GetSriConnectStatus(short& status){
 	if(SriGtRobotStatus.is_connected == true){
-		SriDataHistory[MeasuringDepthNow] = MeasureValue;
+		SriDataHistory[MeasuringDepthNow] = SriDataNow[2];
 		if(MeasuringDepthNow >= MEASURINGDEPTH){
 			int tempcount = 0;
 			for(int i = 0;i < MEASURINGDEPTH;i++){
@@ -68,7 +68,7 @@ short  SRISensor::GetSriConnectStatus(short& status,float MeasureValue){
 	return 0;
 }
 
-short SRISensor::SetSriFzZero(float& FzZeroData){
+short SRISensor::SetSriFzZero(){
 	char SriOffsetAskCom[8] = {0x41, 0x54, 0x2B, 0x47, 0x4F, 0x44, 0x0D, 0x0A};
 	if (SriGtRobotStatus.is_connected){ 
 		CRobotComm::clientSendData(GtRobotTcpClient,SriOffsetAskCom,8);
@@ -82,7 +82,6 @@ short SRISensor::SetSriFzZero(float& FzZeroData){
 		dataint = (UCHAR)RecvRawData[14]     | dataint;
 
 		SriDataZero[2] =  *((float*)(&dataint));
-		FzZeroData = SriDataZero[2];
 	}
 
 	return 0;
@@ -109,5 +108,24 @@ short SRISensor::GetSriFzData(float& FzData){
 			FzData = SriDataNow[2];
 		}
 	}
+	return 0;
+}
+
+short SRISensor::SriParameterReset(){
+	for (int i=0i<8;i++){
+		SriDataZero[i] = 0;
+		SriDataNow[i] = 0;
+	}
+	for(int i=0;i<32;i++){
+		RecvRawData[i] = 0;
+	}
+	for(int i=0;i<MEASURINGDEPTH;i++){
+		SriDataHistory[i] = 0;
+	}
+	return 0;
+}
+
+short SRISensor::SetSriAskStatus(bool status){
+	AskStatus = status;
 	return 0;
 }

@@ -84,3 +84,15 @@ short  ManualOffset::ManGetOffsetZSum(double& value){
 	value = ManOffsetSumNow[2];
 	return 0;
 }
+short ManualOffset::ManOffsetParameterReset(){
+	for (int i=0;i<8;i++){
+		ManOffsetSumNow[i] = 0;
+		ManOffsetSumLast[i] = 0;
+		ManOffsetRela[i] = 0;
+	}
+	return 0;
+}
+short   ManualOffset::ManualSetStep(double step){
+	ManOffsetStep = step;
+	return 0;
+}	
