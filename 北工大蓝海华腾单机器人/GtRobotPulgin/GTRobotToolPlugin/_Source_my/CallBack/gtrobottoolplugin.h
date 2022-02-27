@@ -11,6 +11,19 @@
 #include "robot_comm_interface.h"
 #include "plc_standard_class.h"
 
+#define STATUS_ON true
+#define STATUS_OFF false
+
+#define SPINDLE_ON 2
+#define SPINDLE_OFF 3
+#define SPINDLE_SPEED_STEP 100 //转速步距
+
+#define MAN_OFFSET_MINS_TEP 0.1 
+#define MAN_OFFSET_PD 0 //手动正方向
+#define MAN_OFFSET_ND 1 //手动负方向
+
+#define FORCE_CTRL_MIN_STEP 100
+
 class FSW : public GtAppFrameInterface{
 Q_OBJECT
 	Q_INTERFACES(GtAppFrameInterface)
@@ -22,8 +35,8 @@ public:
 	void keyPressEvent(QKeyEvent *event);//键盘事件
 public:
 	void RegisterPLCLoopRun();		  //注册PLC函数
-	void ConnectSpindleSignalSlots();//注册电主轴的回调函数
-	void ConnectOffsetSignalSlots(); //注册动态偏移的回调函数
+	void ConnectSpindleSignalSlots(); //注册电主轴的回调函数
+	void ConnectOffsetSignalSlots();  //注册动态偏移的回调函数
 public:
 	void GetSpindleParameters();//上行同步主轴信息
 	void GetOffsetParameters(); //上行同步动态偏移信息
@@ -83,12 +96,12 @@ private:
 	double SriCorrectSumZ;      //力控Z方向修正总量
 	double SriFzNow;            //当前的顶锻力
 	double SriFzSet;            //设定的顶锻力
-	bool   SriOffsetStatus;             //修正状态   0关闭修正 1开启修正
-	bool   SriConnectSetStatus;     //连接状态   0关闭连接 1开启连接
-	bool   SriAskStatus;         //是否开启问询
-	short  SriConnectStatusNow;        //问询连接状态
+	bool   SriOffsetStatus;     //修正状态   0关闭修正 1开启修正
+	bool   SriConnectSetStatus; //连接状态   0关闭连接 1开启连接
+	bool   SriAskStatus;        //是否开启问询
+	short  SriConnectStatusNow; //问询连接状态
 
-	double hmi_fwsmartix[11][7];	   //力位混合控制矩阵
+	double hmi_fwsmartix[11][7];//力位混合控制矩阵
 };
 
 #endif // FSW_H
