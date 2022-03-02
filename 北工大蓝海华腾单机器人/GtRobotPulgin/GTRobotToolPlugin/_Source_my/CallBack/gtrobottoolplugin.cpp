@@ -21,10 +21,12 @@ FSW::FSW(QWidget *parent){
 	ConnectSpindleSignalSlots(); //连接电主轴槽函数
 	ConnectOffsetSignalSlots();	 //连接动态偏移槽函数
 	
-	BGDOffsetInit();     //动态偏移的初始化
-	BGDCvtSpindleInit(); //电主轴的初始化
+	BGDOffsetInit();                  //动态偏移的初始化
+	BGDCvtSpindleInit();              //电主轴的初始化
+
+	BGDFswMartixUpdate(hmi_fwsmartix);//传递系数矩阵
 	
-	RegisterPLCLoopRun(); //注册PLC循环函数
+	RegisterPLCLoopRun();             //注册PLC循环函数
 }
 
 FSW::~FSW(){
@@ -47,7 +49,7 @@ void FSW::FSWHmiVarInit(){
 
 	this->SriConnectSetStatus = false; //连接状态   0关闭连接 1开启连接
 	this->SriAskStatus = false;        //是否开启问询
-	this->SriOffsetStatus = false;     //修正状态   0关闭修正 1开启修正
+	this->SriOffsetStatus = false;     //力修正状态   0关闭修正 1开启修正
 	this->SriConnectStatusNow = 0;     //问询连接状态
 
 	this->SriCorrectSumZ = 0;      //力控Z方向修正总量
@@ -161,9 +163,9 @@ void FSW::keyPressEvent(QKeyEvent *event){
 void FSW::RegisterPLCLoopRun(){
 	GTR_RegisterPlcLoop(1,BGDCvtSpindleModebusLoopRun);
 	GTR_RegisterPlcLoop(2,BGDGetSriDataLoopRun);
-	GTR_RegisterPlcLoop(3,BGDGetManOffDataLoopRun);
-	GTR_RegisterPlcLoop(4,BGDDoOffsetLoopRun);
+	GTR_RegisterPlcLoop(3,BGDDoOffsetLoopRun);
 }
+
 void FSW::ConnectSpindleSignalSlots(){
 	connect(ui.pbSpindleConnect,SIGNAL(clicked()),this,SLOT(onpbpbSpindleConnect()));
 	connect(ui.mpushbutton_spindle_on,SIGNAL(clicked()),this,SLOT(onpbtnclicked_mpushbutton_spindle_on()));
@@ -233,10 +235,14 @@ void FSW::GetOffsetParameters(){
 	BGDReadSriFz(SriFzNow);
 	SriFzSet = SriFzSet;
 
+	//0未连接1正常2异常3未采集
 	switch (SriConnectStatusNow){
-		case 1:  ui.mlabel_sri_status_connect->setText("已连接");	 break;
-		case 2:  ui.mlabel_sri_status_connect->setText("正在连接"); break;
-		default: ui.mlabel_sri_status_connect->setText("未连接");   break;
+		case 0:	 ui.mlabel_sri_status_connect->setText("未连接");	 break;
+		case 1:  ui.mlabel_sri_status_connect->setText("采集中");	 break;
+		case 2:  ui.mlabel_sri_status_connect->setText("异常！");    break;
+		case 3:  ui.mlabel_sri_status_connect->setText("未采集");	 break;
+		default: ui.mlabel_sri_status_connect->setText("其他");     break;
+
 	}
 	ui.mlcdnumber_sri_Fz->display(SriFzNow);
 	ui.mlcdnumber_sri_fzsetting->display(SriFzSet);

@@ -49,22 +49,26 @@ short SRISensor::GetSriClientStatus(short& status){
 
 short  SRISensor::GetSriConnectStatus(short& status){
 	if(SriGtRobotStatus.is_connected == true){
-		SriDataHistory[MeasuringDepthNow] = SriDataNow[2];
-		if(MeasuringDepthNow >= MEASURINGDEPTH){
-			int tempcount = 0;
-			for(int i = 0;i < MEASURINGDEPTH;i++){
-				if(SriDataHistory[0] == SriDataHistory[i+1]) tempcount++;
+		if(AskStatus == true){
+			SriDataHistory[MeasuringDepthNow] = SriDataNow[2];
+			if(MeasuringDepthNow >= MEASURINGDEPTH){
+				int tempcount = 0;
+				for(int i = 0;i < MEASURINGDEPTH;i++){
+					if(SriDataHistory[0] == SriDataHistory[i+1]) tempcount++;
+				}
+				if(tempcount == (MEASURINGDEPTH-1)) SriServerStatus = 2;
+				else           SriServerStatus = 1;
+				MeasuringDepthNow = 0;
 			}
-			if(tempcount == (MEASURINGDEPTH-1)) status = 2;
-			else           status = 1;
-			MeasuringDepthNow = 0;
+			else{
+				MeasuringDepthNow = MeasuringDepthNow + 1;
+				SriServerStatus = 1;
+			}
 		}
-		else{
-			MeasuringDepthNow = MeasuringDepthNow + 1;
-			status = 1;
-		}
+		else{SriServerStatus = 3;}
 	}
-	else{ status = 0; }
+	else{ SriServerStatus = 0; }
+	status = SriServerStatus;
 	return 0;
 }
 
@@ -87,7 +91,12 @@ short SRISensor::SetSriFzZero(){
 	return 0;
 }
 
-short SRISensor::GetSriFzData(float& FzData){   
+short SRISensor::GetSriFzData(double& value){   
+	value = SriDataNow[2];
+	return 0;
+}
+
+short SRISensor::GetSriFzDataLoopRun(){
 	char SriOffsetAskCom[8] ={ 0x41, 0x54, 0x2B, 0x47, 0x4F, 0x44, 0x0D, 0x0A };
 	if(AskStatus == true){
 		if (SriGtRobotStatus.is_connected){ 
@@ -104,15 +113,13 @@ short SRISensor::GetSriFzData(float& FzData){
 			SriDataNow[2] =  *((float*)(&dataint));
 			SriDataNow[2] = SriDataNow[2] - SriDataNow[2];
 			SriDataNow[2] = fabs(SriDataNow[2]);
-
-			FzData = SriDataNow[2];
 		}
 	}
 	return 0;
 }
 
 short SRISensor::SriParameterReset(){
-	for (int i=0i<8;i++){
+	for (int i=0;i<8;i++){
 		SriDataZero[i] = 0;
 		SriDataNow[i] = 0;
 	}

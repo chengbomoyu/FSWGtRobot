@@ -12,6 +12,7 @@ short BGDOffsetInit(){
 	if(mOffsetEx == NULL) mOffsetEx = new OffsetEx();
 	if(mManualOffset == NULL) mManualOffset = new ManualOffset();
 	if(mSRISensor == NULL) mSRISensor = new SRISensor();
+
 	mOffsetEx->mManualOffset = mManualOffset;
 	mOffsetEx->mSRISensor = mSRISensor;
 	return 0;
@@ -43,7 +44,7 @@ short BGDRreadOffsetSumZ(double& value){
 }
 
 short BGDManualOffsetStatusSet(bool status){
-	mManualOffset->ManOffsetStatus(status);
+	mManualOffset->ManualSetStatus(status);
 	return 0;
 }
 
@@ -69,49 +70,64 @@ short BGDGetManOffsetSumY(double& value){
 
 short BGDGetManOffsetSumZ(double& value){
 	mManualOffset->ManGetOffsetZSum(value);
+	return 0;
 }
 
 
 short BGDSriConnectSet(bool status){
 	if(status==true) mSRISensor->SriConnect();
 	else             mSRISensor->SriDisconnect();
+	return 0;
 }
 
 short BGDSriReadConnectStatus(short& status){
 	mSRISensor->GetSriConnectStatus(status);
+	return 0;
 }
 
 short BGDSriSetStatus(bool status){
+	mOffsetEx->OffsetForceControlStatusSet(status);
+	return 0;
 }
 
 short BGDSriSetAskStatus(bool status){
 	mSRISensor->SetSriAskStatus(status);
+	return 0;
 }
 
 short BGDSriSetZero(){
 	mSRISensor->SetSriFzZero();
+	return 0;
 }
 
 short BGDSriSetFz(double value){
-
+	mOffsetEx->dValueSetFz = value;
+	return 0;
 }
 
 short BGDReadSriFz(double& value){
+	mSRISensor->GetSriFzData(value);
+	return 0;
 }
 
 short BGDRreadSriOffsetZ(double& value){
-}
 
+	return 0;
+}
 
 short BGDFswMartixUpdate(double Martix[][7]){
+	for(int i = 0; i < 11; i++){
+		for(int j = 0; j < 7; j++){
+			mOffsetEx->FswOffsetMartix[i][j] = Martix[i][j];
+		}
+	}
+	return 0;
 }
-
 
 void BGDGetSriDataLoopRun(){
-}
-
-void BGDGetManOffDataLoopRun(){
+	mSRISensor->GetSriFzDataLoopRun();
 }
 
 void BGDDoOffsetLoopRun(){
+	mOffsetEx->OffsetDoOffset();
 }

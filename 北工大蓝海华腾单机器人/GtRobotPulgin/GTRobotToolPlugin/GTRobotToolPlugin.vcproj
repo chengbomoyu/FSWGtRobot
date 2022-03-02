@@ -206,14 +206,6 @@
 				<Filter
 					Name="OffsetInterFace"
 					>
-					<File
-						RelativePath=".\_Source_my\Interface\OffsetInterface.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\_Source_my\Interface\OffsetInterface.h"
-						>
-					</File>
 					<Filter
 						Name="OffsetInterFaceEx"
 						>
@@ -226,6 +218,18 @@
 							>
 						</File>
 					</Filter>
+					<Filter
+						Name="OffsetInterFace-origne"
+						>
+						<File
+							RelativePath=".\_Source_my\Interface\OffsetInterface.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\_Source_my\Interface\OffsetInterface.h"
+							>
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 			<Filter
@@ -234,14 +238,6 @@
 				<Filter
 					Name="Offset"
 					>
-					<File
-						RelativePath=".\_Source_my\Source\Offset.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\_Source_my\Source\Offset.h"
-						>
-					</File>
 					<Filter
 						Name="OffsetEx"
 						>
@@ -253,6 +249,34 @@
 							RelativePath=".\_Source_my\Source\OffsetEx.h"
 							>
 						</File>
+					</Filter>
+					<Filter
+						Name="Offset-origne"
+						>
+						<File
+							RelativePath=".\_Source_my\Source\Offset.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\_Source_my\Source\Offset.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="Insert"
+						>
+						<Filter
+							Name="Manual"
+							>
+							<File
+								RelativePath=".\_Source_my\Source\Manual.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\_Source_my\Source\Manual.h"
+								>
+							</File>
+						</Filter>
 					</Filter>
 				</Filter>
 				<Filter
@@ -283,18 +307,6 @@
 						</File>
 						<File
 							RelativePath=".\_Source_my\Source\SRI.h"
-							>
-						</File>
-					</Filter>
-					<Filter
-						Name="HMI"
-						>
-						<File
-							RelativePath=".\_Source_my\Source\Manual.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\_Source_my\Source\Manual.h"
 							>
 						</File>
 					</Filter>

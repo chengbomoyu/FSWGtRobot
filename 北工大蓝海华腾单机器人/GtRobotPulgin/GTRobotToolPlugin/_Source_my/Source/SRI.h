@@ -26,7 +26,7 @@ public:
 	STcpClientStatus SriGtRobotStatus;   //SRI客户端状态
 	HANDLE GtRobotTcpClient;             //SRI客户端句柄
 	
-	short SriServerStatus;  //SRI服务器状态
+	short SriServerStatus;  //SRI服务器状态//0未连接1正常2异常3未采集
 	bool  AskStatus;        //SRI是否建立问询
 
 	char*   RecvRawData;    //SRI接收到的原始数据
@@ -42,7 +42,8 @@ public:
 	short   SriDisconnect();
 	short   SetSriFzZero();
 	short   SetSriAskStatus(bool status);
-	short   GetSriFzData(float& FzZeroData);
+	short   GetSriFzData(double& value);
+	short   GetSriFzDataLoopRun();
 	short   GetSriClientStatus(short& status);
 	short   GetSriConnectStatus(short& status);
 

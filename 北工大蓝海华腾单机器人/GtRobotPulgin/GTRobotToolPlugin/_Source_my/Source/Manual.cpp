@@ -28,10 +28,6 @@ ManualOffset::~ManualOffset(){
 
 short ManualOffset::ManualSetStatus(bool status){
 	ManOffsetStatus = status;
-	if(ManOffsetStatus == true)
-		GTR_SetOffsetOn(100,10,0);
-	else
-		GTR_SetOffsetOff(0);
 	return 0;
 }
 
