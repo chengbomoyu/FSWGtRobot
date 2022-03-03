@@ -111,7 +111,7 @@ short BGDReadSriFz(double& value){
 }
 
 short BGDRreadSriOffsetZ(double& value){
-
+	value = 0;
 	return 0;
 }
 

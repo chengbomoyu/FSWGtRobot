@@ -18,7 +18,7 @@
 #define SPINDLE_OFF 3
 #define SPINDLE_SPEED_STEP 100 //转速步距
 
-#define MAN_OFFSET_MINS_TEP 0.1 
+#define MAN_OFFSET_MINS_TEP 0.1 //人在回路调整步距
 #define MAN_OFFSET_PD 0 //手动正方向
 #define MAN_OFFSET_ND 1 //手动负方向
 

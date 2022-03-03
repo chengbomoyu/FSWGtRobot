@@ -1,4 +1,4 @@
-#include "_Source_my/Source/Spindle.h"
+#include "_Source_my/Source/CvtSpindle.h"
 #include <QDebug>
 
 #include "gtrobot_backend_define.h"
@@ -17,7 +17,7 @@ CvtSpindle::CvtSpindle(){
 	SpindleSpeedReal = 0;      //主轴实时速度
 	SpindleAccaccelation = -1; //主轴加速度
 	SpindleDecelation = -1;	   //主轴减速度
-	SpindleDirection = -1;       //主轴方向,-1逆时针 0默认  1顺时针
+	SpindleDirection = -1;     //主轴方向,-1逆时针 0默认  1顺时针
 
 	CvtGetSpeedSModbusRtuCmdEx.is_finish = &CvtGetSpeedIsFinish;
 	CvtGetSpeedSModbusRtuCmdEx.is_timeout = &CvtGetSpeedTimeout;
@@ -32,7 +32,7 @@ CvtSpindle::CvtSpindle(){
 	CvtSetSpeedSModbusRtuCmdEx.data_len = 1;
 
 	CvtSetDirectionSModbusRtuCmdEx.is_finish = &CvtSetDirectionIsFinish;
-	CvtSetDirectionSModbusRtuCmdEx.is_timeout = &CvtGetDirectionTimeout;
+	CvtSetDirectionSModbusRtuCmdEx.is_timeout = &CvtSetDirectionTimeout;
 	CvtSetDirectionSModbusRtuCmdEx.read_enb = false;
 	CvtSetDirectionSModbusRtuCmdEx.start_adress = 0x0101;
 	CvtSetDirectionSModbusRtuCmdEx.data_len = 1;
@@ -51,8 +51,8 @@ short CvtSpindle::SpindleConnect(){
 	STcpServerInfo info;
 	char* ip = "192.168.0.7";
 	strcpy(info.ip,ip);
-	info.port = 502;
-	CvtModebusRtu.resinfo(&info,1);
+	info.port = 26;
+	CvtModebusRtu->resinfo(&info,1);
 	SpindleComStatus = 1;
 	return 0;
 }
@@ -65,12 +65,12 @@ short CvtSpindle::SpindleServorStatusSet(short mStatus){
 		unsigned short data_off = 0x0000;
 		SpindleStatus = mStatus;
 		if(SpindleStatus==2){  
-			CvtSetDirectionSModbusRtuCmdEx.p_data = &data_on;
+			CvtSetStatusSModbusRtuCmdEx.p_data = &data_on;
 		}
 		else if(SpindleStatus==3){//主轴关闭
-			CvtSetDirectionSModbusRtuCmdEx.p_data = &data_off;
+			CvtSetStatusSModbusRtuCmdEx.p_data = &data_off;
 		}
-		CvtModebusRtu.addCmdEx(&CvtSetDirectionSModbusRtuCmdEx);
+		CvtModebusRtu->addCmdEx(&CvtSetStatusSModbusRtuCmdEx);
 		return 0;
 	}
 	return 0;
@@ -82,16 +82,16 @@ short CvtSpindle::SpindleGetRealSpeed(int& mRealSpeed){
 	}
 	else if(SpindleComStatus == 1){
 		if(SpindleDirection == 1)
-			SpindleSpeedReal = CvtSpindleModebusRtuSpeedReal * 10;
+			SpindleSpeedReal = CvtGetSpeedData * 10;
 		else{
-			SpindleSpeedReal = -(65536 - CvtSpindleModebusRtuSpeedReal) * 10;
+			SpindleSpeedReal = -(65536 - CvtGetSpeedData) * 10;
 			if (SpindleSpeedReal == -655360)
 				SpindleSpeedReal = 0;
 		}
 		mRealSpeed = SpindleSpeedReal;
-		CvtSpindleModebusRtuSpeedReal = 0x0001;
-		CvtGetSpeedSModbusRtuCmdEx.p_data = &CvtSpindleModebusRtuSpeedReal;
-		CvtModebusRtu.addCmdEx(&CvtGetSpeedSModbusRtuCmdEx);
+		CvtGetSpeedData = 0x0001;
+		CvtGetSpeedSModbusRtuCmdEx.p_data = &CvtGetSpeedData;
+		CvtModebusRtu->addCmdEx(&CvtGetSpeedSModbusRtuCmdEx);
 		return 0;
 	}
 	return 0;
@@ -103,13 +103,9 @@ short CvtSpindle::SpindleSetSpeed(int mSetSpeed){
 	}
 	else if(SpindleComStatus == 1){
 		unsigned short speed_hz = abs(mSetSpeed);
-		SpindleSpeedSet=mSetSpeed;
+		SpindleSpeedSet = mSetSpeed;
 		CvtSetSpeedSModbusRtuCmdEx.p_data = &speed_hz;
-		CvtModebusRtu.addCmdEx(&CvtSetSpeedSModbusRtuCmdEx);
-
-		if(SpindleSpeedSet<  0) SpindleSetDirection(0);
-		if(SpindleSpeedSet>= 0)	SpindleSetDirection(1);
-
+		CvtModebusRtu->addCmdEx(&CvtSetSpeedSModbusRtuCmdEx);
 		return 0;
 	}
 	return 0;
@@ -129,7 +125,7 @@ short CvtSpindle::SpindleSetDirection(short mDirection){
 		else if(SpindleDirection==-1){//逆时针旋转
 			CvtSetDirectionSModbusRtuCmdEx.p_data = &data_left;
 		}
-		CvtModebusRtu.addCmdEx(&CvtSetDirectionSModbusRtuCmdEx);
+		CvtModebusRtu->addCmdEx(&CvtSetDirectionSModbusRtuCmdEx);
 		return 0;
 	}
 	return 0;

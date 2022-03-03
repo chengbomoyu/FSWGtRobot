@@ -265,35 +265,23 @@
 					<Filter
 						Name="Insert"
 						>
-						<Filter
-							Name="Manual"
-							>
-							<File
-								RelativePath=".\_Source_my\Source\Manual.cpp"
-								>
-							</File>
-							<File
-								RelativePath=".\_Source_my\Source\Manual.h"
-								>
-							</File>
-						</Filter>
 					</Filter>
 				</Filter>
 				<Filter
 					Name="Spindle"
 					>
-					<File
-						RelativePath=".\_Source_my\Source\CvtSpindle.cpp"
+					<Filter
+						Name="CVT"
 						>
-					</File>
-					<File
-						RelativePath=".\_Source_my\Source\Spindle.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\_Source_my\Source\Spindle.h"
-						>
-					</File>
+						<File
+							RelativePath=".\_Source_my\Source\CvtSpindle.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\_Source_my\Source\CvtSpindle.h"
+							>
+						</File>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="Sensor"
@@ -310,6 +298,26 @@
 							>
 						</File>
 					</Filter>
+					<Filter
+						Name="Manual"
+						>
+						<File
+							RelativePath=".\_Source_my\Source\Manual.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\_Source_my\Source\Manual.h"
+							>
+						</File>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="FSW"
+					>
+				</Filter>
+				<Filter
+					Name="Com"
+					>
 				</Filter>
 			</Filter>
 			<Filter

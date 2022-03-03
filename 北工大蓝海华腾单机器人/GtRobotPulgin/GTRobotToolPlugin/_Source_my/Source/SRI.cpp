@@ -12,8 +12,8 @@
 SRISensor::SRISensor(){
 	MeasuringDepthNow = 0;
 	RecvRawData = new char[32];   //SRI接收到的原始数据
-	SriDataZero = new float[8];   //SRI传感器的零点
-	SriDataNow = new float[8];    //SRI转换后的数据
+	SriDataZero = new float[6];   //SRI传感器的零点
+	SriDataNow = new float[6];    //SRI转换后的数据
 	SriDataHistory = new float[MEASURINGDEPTH];
 }
 
@@ -51,23 +51,23 @@ short  SRISensor::GetSriConnectStatus(short& status){
 	if(SriGtRobotStatus.is_connected == true){
 		if(AskStatus == true){
 			SriDataHistory[MeasuringDepthNow] = SriDataNow[2];
-			if(MeasuringDepthNow >= MEASURINGDEPTH){
+			if(MeasuringDepthNow >= (MEASURINGDEPTH-1)){
 				int tempcount = 0;
 				for(int i = 0;i < MEASURINGDEPTH;i++){
 					if(SriDataHistory[0] == SriDataHistory[i+1]) tempcount++;
 				}
-				if(tempcount == (MEASURINGDEPTH-1)) SriServerStatus = 2;
+				if(tempcount == (MEASURINGDEPTH-1)) SriServerStatus = ERROR;
 				else           SriServerStatus = 1;
 				MeasuringDepthNow = 0;
 			}
 			else{
 				MeasuringDepthNow = MeasuringDepthNow + 1;
-				SriServerStatus = 1;
+				SriServerStatus = NORMAL;
 			}
 		}
-		else{SriServerStatus = 3;}
+		else{SriServerStatus = DISDAQ;}
 	}
-	else{ SriServerStatus = 0; }
+	else{ SriServerStatus = DISCONNECT; }
 	status = SriServerStatus;
 	return 0;
 }
@@ -84,10 +84,8 @@ short SRISensor::SetSriFzZero(){
 		dataint = (UCHAR)RecvRawData[16]<<16 | dataint;
 		dataint = (UCHAR)RecvRawData[15]<<8  | dataint;
 		dataint = (UCHAR)RecvRawData[14]     | dataint;
-
 		SriDataZero[2] =  *((float*)(&dataint));
 	}
-
 	return 0;
 }
 
@@ -111,7 +109,7 @@ short SRISensor::GetSriFzDataLoopRun(){
 			dataint = (UCHAR)RecvRawData[14]     | dataint;
 
 			SriDataNow[2] =  *((float*)(&dataint));
-			SriDataNow[2] = SriDataNow[2] - SriDataNow[2];
+			SriDataNow[2] = SriDataNow[2] - SriDataZero[2];
 			SriDataNow[2] = fabs(SriDataNow[2]);
 		}
 	}
