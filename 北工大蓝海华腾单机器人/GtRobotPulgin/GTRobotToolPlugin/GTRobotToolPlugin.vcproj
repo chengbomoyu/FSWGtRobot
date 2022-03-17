@@ -235,6 +235,10 @@
 						</File>
 					</Filter>
 				</Filter>
+				<Filter
+					Name="FSW"
+					>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Source"
@@ -302,6 +306,14 @@
 				<Filter
 					Name="FSW"
 					>
+					<File
+						RelativePath=".\_Source_my\Source\FSW.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\_Source_my\Source\FSW.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter

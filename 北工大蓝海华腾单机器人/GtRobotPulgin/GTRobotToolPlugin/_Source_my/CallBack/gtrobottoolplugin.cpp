@@ -30,7 +30,6 @@ FSW::FSW(QWidget *parent){
 	BGDOffsetInit();                  //动态偏移的初始化
 
 	//ConnectFswTecSignalSlots();
-	//BGDFswMartixUpdate(hmi_fwsmartix);//传递系数矩阵
 	
 	RegisterPLCLoopRun();             //注册PLC循环函数
 
@@ -64,64 +63,6 @@ void FSW::FSWHmiVarInit(){
 	this->SriCorrectSumZ = 0;      //力控Z方向修正总量
 	this->SriFzNow = 0;            //当前的顶锻力
 	this->SriFzSet = 4500;         //设定的顶锻力
-
-	/********************************************/
-	hmi_fwsmartix[1][1] = 0.8;
-	hmi_fwsmartix[1][2] = 0.8;
-	hmi_fwsmartix[1][3] = 0.8;
-	hmi_fwsmartix[1][4] = 0.8;
-	hmi_fwsmartix[1][5] = 0.8;
-	hmi_fwsmartix[1][6] = 0.8;
-	/********************************************/
-	hmi_fwsmartix[3][1] = 0.2;
-	hmi_fwsmartix[3][2] = 0.2;
-	hmi_fwsmartix[3][3] = 0.2;
-	hmi_fwsmartix[3][4] = 0.2;
-	hmi_fwsmartix[3][5] = 0.2;
-	hmi_fwsmartix[3][6] = 0.2;
-	/********************************************/
-	hmi_fwsmartix[4][1] = -0.5;
-	hmi_fwsmartix[4][2] = -0.3;
-	hmi_fwsmartix[4][3] = 0;
-	hmi_fwsmartix[4][4] = 0;
-	hmi_fwsmartix[4][5] = 0.1;
-	hmi_fwsmartix[4][6] = 0.15;
-	/********************************************/
-	hmi_fwsmartix[5][1] = 0;
-	hmi_fwsmartix[5][2] = 0;
-	hmi_fwsmartix[5][3] = 0;
-	hmi_fwsmartix[5][4] = 0;
-	hmi_fwsmartix[5][5] = 0;
-	hmi_fwsmartix[5][6] = 0;
-	/********************************************/
-	hmi_fwsmartix[6][1] = -0.5;
-	hmi_fwsmartix[6][2] = -0.3;
-	hmi_fwsmartix[6][3] = 0;
-	hmi_fwsmartix[6][4] = 0;
-	hmi_fwsmartix[6][5] = 0.15;
-	hmi_fwsmartix[6][6] = 0.2;
-	/********************************************/
-	hmi_fwsmartix[7][1] = 0;
-	hmi_fwsmartix[7][2] = 0;
-	hmi_fwsmartix[7][3] = 0;
-	hmi_fwsmartix[7][4] = 0;
-	hmi_fwsmartix[7][5] = 0;
-	hmi_fwsmartix[7][6] = 0;
-	/********************************************/
-	hmi_fwsmartix[8][1] = -0.5;
-	hmi_fwsmartix[8][2] = -0.3;
-	hmi_fwsmartix[8][3] = 0;
-	hmi_fwsmartix[8][4] = 0;
-	hmi_fwsmartix[8][5] = 0.2;
-	hmi_fwsmartix[8][6] = 0.25;
-	/********************************************/
-	hmi_fwsmartix[9][1] = -1;
-	hmi_fwsmartix[9][2] = -1;
-	hmi_fwsmartix[9][3] = -1;
-	hmi_fwsmartix[9][4] = -1;
-	hmi_fwsmartix[9][5] = -1;
-	hmi_fwsmartix[9][6] = -1;
-	/********************************************/
 }
 void FSW::keyPressEvent(QKeyEvent *event){
 	switch(event->key()){

@@ -98,8 +98,6 @@ private:
 	bool   SriConnectSetStatus; //连接状态   0关闭连接 1开启连接
 	bool   SriAskStatus;        //是否开启问询
 	short  SriConnectStatusNow; //问询连接状态
-
-	double hmi_fwsmartix[11][7];//力位混合控制矩阵
 };
 
 #endif // FSW_H
