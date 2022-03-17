@@ -10,8 +10,10 @@
 #define MEASURINGDEPTH 5
 
 #define DISCONNECT 0
+#define SRIERROR 2
 #define NORMAL 1
 #define DISDAQ 3
+
 
 class SRISensor{
 public:

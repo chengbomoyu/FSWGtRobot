@@ -21,14 +21,16 @@ FSW::FSW(QWidget *parent){
  
 	ConnectSpindleSignalSlots(); //连接电主轴槽函数
 	BGDCvtSpindleInit();         //电主轴的初始化
-	BGDCvtSpindleConnect();      //连接蓝海华腾电主轴
+	//BGDCvtSpindleConnect();      //连接蓝海华腾电主轴
 
 	ConnectSensorSignalSlots(); //连接传感器槽函数
 	BGDSRIInit();               //传感器初始化
 
 	ConnectOffsetSignalSlots();	 //连接动态偏移槽函数
 	BGDOffsetInit();                  //动态偏移的初始化
-	BGDFswMartixUpdate(hmi_fwsmartix);//传递系数矩阵
+
+	//ConnectFswTecSignalSlots();
+	//BGDFswMartixUpdate(hmi_fwsmartix);//传递系数矩阵
 	
 	RegisterPLCLoopRun();             //注册PLC循环函数
 
@@ -36,9 +38,9 @@ FSW::FSW(QWidget *parent){
 }
 
 FSW::~FSW(){
+	BGDCvtSpindleDeInit();//回收电主轴的内存
 	BGDSRIDeinit();       //回收传感器的内存
 	BGDOffsetDeinit();    //回收动态偏移的内存
-	BGDCvtSpindleDeInit();//回收电主轴的内存
 }
 void FSW::FSWHmiVarInit(){
 	this->SpindleSpeedSet = 0;//设定的主轴转速
@@ -46,13 +48,13 @@ void FSW::FSWHmiVarInit(){
 	this->SpindleGetStatus = 0;//获取的主轴状态
 	this->SpindleSetStatus = 0;//设定的主轴状态
 
-	this->OffsetStatus = 0;   //修正状态
+	this->OffsetStatus = false;   //修正状态
 	this->OffsetSumY = 0;     //修正Y总量
 	this->OffsetSumZ = 0;     //修正Z总量
 
 	this->OffsetManSumY = 0;  //手动修正Y总量
 	this->OffsetManSumZ = 0;  //手动修正Z总量
-	this->OffsetManStep = 0;  //手动修正步距
+	this->OffsetManStep = 0.1;  //手动修正步距
 
 	this->SriConnectSetStatus = false; //连接状态     0关闭连接 1开启连接
 	this->SriAskStatus = false;        //是否开启问询
@@ -141,12 +143,12 @@ void FSW::keyPressEvent(QKeyEvent *event){
 			break;
 		case Qt::Key_7:
 			SriFzSet = SriFzSet + 100;
-			BGDSriSetFz(SriFzSet);
+			//BGDSriSetFz(SriFzSet);
 			break;
 		case Qt::Key_4:
 			SriFzSet = SriFzSet - 100;
 			if(SriFzSet <= 0) SriFzSet = 0;
-			BGDSriSetFz(SriFzSet);	
+			//BGDSriSetFz(SriFzSet);	
 			break;
 		case Qt::Key_0:
 			OffsetManStep = OffsetManStep - 0.1;
@@ -168,7 +170,7 @@ void FSW::keyPressEvent(QKeyEvent *event){
 	}
 }
 void FSW::RegisterPLCLoopRun(){
-	GTR_RegisterPlcLoop(1,BGDCvtSpindleModebusLoopRun);
+	//GTR_RegisterPlcLoop(1,BGDCvtSpindleModebusLoopRun);
 	GTR_RegisterPlcLoop(2,BGDGetSriDataLoopRun);
 	GTR_RegisterPlcLoop(3,BGDDoOffsetLoopRun);
 }
@@ -182,14 +184,14 @@ void FSW::ConnectSpindleSignalSlots(){
 
 void FSW::ConnectOffsetSignalSlots(){
 	connect(ui.mpushbutton_offset_status_set,SIGNAL(clicked()),this,SLOT(onpbtnclicked_mpushbutton_offset_status_set()));
-	
 	connect(ui.mpushbutton_rsi_man_step_up,SIGNAL(clicked()),this,SLOT(onpbtnclicked_mpushbutton_rsi_man_step_up()));
 	connect(ui.mpushbutton_rsi_man_step_down,SIGNAL(clicked()),this,SLOT(onpbtnclicked_mpushbutton_rsi_man_step_down()));
 	connect(ui.mpushbutton_rsi_man_y_up,SIGNAL(clicked()),this,SLOT(onpbtnclicked_mpushbutton_rsi_man_y_up()));
 	connect(ui.mpushbutton_rsi_man_y_down,SIGNAL(clicked()),this,SLOT(onpbtnclicked_mpushbutton_rsi_man_y_down()));
 	connect(ui.mpushbutton_rsi_man_z_up,SIGNAL(clicked()),this,SLOT(onpbtnclicked_mpushbutton_rsi_man_z_up()));
 	connect(ui.mpushbutton_rsi_man_z_down,SIGNAL(clicked()),this,SLOT(onpbtnclicked_mpushbutton_rsi_man_z_down()));
-
+}
+void FSW::ConnectFswTecSignalSlots(){
 	connect(ui.mpushbutton_sri_fzsetting_up,SIGNAL(clicked()),this,SLOT(onpbtnclicked_mpushbutton_sri_fzsetting_up()));
 	connect(ui.mpushbutton_sri_fzsetting_down,SIGNAL(clicked()),this,SLOT(onpbtnclicked_mpushbutton_sri_fzsetting_down()));
 }
@@ -214,7 +216,7 @@ void FSW::SlowTimerLoop(){
 }
 
 void FSW::FastTimerLoop(){
-	GetSpindleParameters();
+	//GetSpindleParameters();
 	GetOffsetParameters();
 }
 void FSW::GetSpindleParameters(){
@@ -235,7 +237,7 @@ void FSW::GetOffsetParameters(){
 	BGDRreadOffsetSumZ(OffsetSumZ);
 	BGDGetManOffsetSumY(OffsetManSumY);
 	BGDGetManOffsetSumZ(OffsetManSumZ);
-	BGDRreadSriOffsetZ(SriCorrectSumZ);
+	//BGDRreadSriOffsetZ(SriCorrectSumZ);
 	BGDSriReadConnectStatus(SriConnectStatusNow);
 	BGDReadSriFz(SriFzNow);
 
@@ -295,13 +297,13 @@ void FSW::onpbtnclicked_mpushbutton_offset_status_set(){
 	if(OffsetStatus == STATUS_ON){
 		this->OffsetStatus = STATUS_OFF;
 		BGDOffsetStatusSet(STATUS_OFF);
-		BGDManualOffsetStatusSet(STATUS_OFF);
+		ui.mpushbutton_offset_status_set->setText("偏移（开）");
 	} 
 	else if(OffsetStatus == STATUS_OFF){
 		this->OffsetStatus = STATUS_ON;
 		BGDOffsetVarRest();
 		BGDOffsetStatusSet(STATUS_ON);
-		BGDManualOffsetStatusSet(STATUS_ON);
+		ui.mpushbutton_offset_status_set->setText("偏移（关）");
 	}
 	else{}
 }
@@ -364,25 +366,23 @@ void FSW::oncheckboxclicked_mcheckbox_sri_ask(){
 void FSW::oncheckboxclicked_mcheckbox_sri_status_on(){
 	if(SriOffsetStatus == STATUS_ON){
 		SriOffsetStatus = STATUS_OFF;
-		ui.mpushbutton_offset_status_set->setText("偏移（开）");
-		BGDSriSetStatus(STATUS_OFF);
+		//BGDSriSetStatus(STATUS_OFF);
 	}
 	else if(SriOffsetStatus == STATUS_OFF){
 		SriOffsetStatus = STATUS_ON;
-		ui.mpushbutton_offset_status_set->setText("偏移（关）");
-		BGDSriSetStatus(STATUS_ON);
+		//BGDSriSetStatus(STATUS_ON);
 	}
 	else{}
 }
 
 void FSW::onpbtnclicked_mpushbutton_sri_fzsetting_up(){
 	SriFzSet = SriFzSet + FORCE_CTRL_MIN_STEP;
-	BGDSriSetFz(SriFzSet);
+	//BGDSriSetFz(SriFzSet);
 }
 void FSW::onpbtnclicked_mpushbutton_sri_fzsetting_down(){
 	SriFzSet = SriFzSet - FORCE_CTRL_MIN_STEP;
 	if(SriFzSet <= 0) SriFzSet = 0;
-	BGDSriSetFz(SriFzSet);
+	//BGDSriSetFz(SriFzSet);
 }
 
 Q_EXPORT_PLUGIN2("RobotHmi",FSW);

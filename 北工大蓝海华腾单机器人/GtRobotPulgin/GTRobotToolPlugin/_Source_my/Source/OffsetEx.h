@@ -16,31 +16,15 @@ public:
 	~OffsetEx();
 public:
 	bool    OffsetStatus;                 //动态偏移开关
-	bool    OffsetForceControlStatus;     //力控偏移开关
-	bool    OffsetPointLaserControlStatus;//点激光偏移开关
-
-	double* OffsetSumValue;     //修正总量[8]
-	double* SriOffsetRela;
-	double  FswOffsetMartix[11][7]; //力位控制混合矩阵
-
-	double dValueSetFz;            //力控设定值大小
-	double dValuePlaserValtageSet;
-	double dValuePlaserValtageNow;
-
-	double PointPlaserOffsetRela;
+	double* OffsetSumValue;               //修正总量[8]
 public:
-	SRISensor* mSRISensor;
-	ManualOffset* mManualOffset;
+	ManualOffset* mManualOffset;          //手动偏移
 public:
 	short   OffsetStatusSet(bool status);
-	short   OffsetForceControlStatusSet(bool status);
-	short   OffsetPointLaserControlStatusSet(bool status);
+	short   OffsetParamaterRest();
 	short   OffsetDoOffset();
-
 	short   GetOffsetSumY(double& value);
 	short   GetOffsetSumZ(double& value);
-
-	short   OffsetParamaterRest();
 };
 
 #endif // OFFSETEX_H

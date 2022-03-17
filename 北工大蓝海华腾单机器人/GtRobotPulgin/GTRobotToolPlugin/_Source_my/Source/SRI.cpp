@@ -48,34 +48,33 @@ short SRISensor::GetSriClientStatus(short& status){
 }
 
 short  SRISensor::GetSriConnectStatus(short& status){
-	//if(SriGtRobotStatus.is_connected == true){
-	//	if(AskStatus == true){
-	//		SriDataHistory[MeasuringDepthNow] = SriDataNow[2];
-	//		if(MeasuringDepthNow >= (MEASURINGDEPTH-1)){
-	//			int tempcount = 0;
-	//			for(int i = 0;i < MEASURINGDEPTH;i++){
-	//				if(SriDataHistory[0] == SriDataHistory[i+1]) tempcount++;
-	//			}
-	//			if(tempcount == (MEASURINGDEPTH-1)) SriServerStatus = ERROR;
-	//			else           SriServerStatus = 1;
-	//			MeasuringDepthNow = 0;
-	//		}
-	//		else{
-	//			MeasuringDepthNow = MeasuringDepthNow + 1;
-	//			SriServerStatus = NORMAL;
-	//		}
-	//	}
-	//	else{SriServerStatus = DISDAQ;}
-	//}
-	//else{ SriServerStatus = DISCONNECT; }
-	//status = SriServerStatus;
-	SriServerStatus = NORMAL;
+	if(SriGtRobotStatus.is_connected == true){
+		if(AskStatus == true){
+			SriDataHistory[MeasuringDepthNow] = SriDataNow[2];
+			if(MeasuringDepthNow >= (MEASURINGDEPTH-1)){
+				int tempcount = 0;
+				for(int i = 0;i < MEASURINGDEPTH;i++){
+					if(SriDataHistory[0] == SriDataHistory[i+1]) tempcount++;
+				}
+				if(tempcount == (MEASURINGDEPTH-1)) SriServerStatus = SRIERROR;
+				else           SriServerStatus = 1;
+				MeasuringDepthNow = 0;
+			}
+			else{
+				MeasuringDepthNow = MeasuringDepthNow + 1;
+				SriServerStatus = NORMAL;
+			}
+		}
+		else{SriServerStatus = DISDAQ;}
+	}
+	else{ SriServerStatus = DISCONNECT; }
 	status = SriServerStatus;
 	return 0;
 }
 
 short SRISensor::SetSriFzZero(){
 	char SriOffsetAskCom[8] = {0x41, 0x54, 0x2B, 0x47, 0x4F, 0x44, 0x0D, 0x0A};
+	CRobotComm::getTcpClientStatus(GtRobotTcpClient,&SriGtRobotStatus);
 	if (SriGtRobotStatus.is_connected){ 
 		CRobotComm::clientSendData(GtRobotTcpClient,SriOffsetAskCom,8);
 	}
@@ -98,6 +97,7 @@ short SRISensor::GetSriFzData(double& value){
 
 short SRISensor::GetSriFzDataLoopRun(){
 	char SriOffsetAskCom[8] ={0x41, 0x54, 0x2B, 0x47, 0x4F, 0x44, 0x0D, 0x0A};
+	CRobotComm::getTcpClientStatus(GtRobotTcpClient,&SriGtRobotStatus);
 	if(AskStatus == true){
 		if (SriGtRobotStatus.is_connected){ 
 			CRobotComm::clientSendData(GtRobotTcpClient,SriOffsetAskCom,8);

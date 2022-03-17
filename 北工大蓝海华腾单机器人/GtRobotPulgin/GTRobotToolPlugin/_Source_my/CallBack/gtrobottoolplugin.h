@@ -39,6 +39,7 @@ public:
 	void ConnectSpindleSignalSlots(); //注册电主轴的回调函数
 	void ConnectOffsetSignalSlots();  //注册动态偏移的回调函数
 	void ConnectSensorSignalSlots();  //注册传感器的回调函数
+	void ConnectFswTecSignalSlots();
 public:
 	void GetSpindleParameters();//上行同步主轴信息
 	void GetOffsetParameters(); //上行同步动态偏移信息

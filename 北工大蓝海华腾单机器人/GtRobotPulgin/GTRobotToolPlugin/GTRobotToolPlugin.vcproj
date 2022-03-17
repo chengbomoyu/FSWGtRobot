@@ -218,18 +218,6 @@
 							>
 						</File>
 					</Filter>
-					<Filter
-						Name="OffsetInterFace-origne"
-						>
-						<File
-							RelativePath=".\_Source_my\Interface\OffsetInterface.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\_Source_my\Interface\OffsetInterface.h"
-							>
-						</File>
-					</Filter>
 				</Filter>
 				<Filter
 					Name="Sensor"
@@ -267,20 +255,16 @@
 						</File>
 					</Filter>
 					<Filter
-						Name="Offset-origne"
+						Name="Manual"
 						>
 						<File
-							RelativePath=".\_Source_my\Source\Offset.cpp"
+							RelativePath=".\_Source_my\Source\Manual.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\_Source_my\Source\Offset.h"
+							RelativePath=".\_Source_my\Source\Manual.h"
 							>
 						</File>
-					</Filter>
-					<Filter
-						Name="Insert"
-						>
 					</Filter>
 				</Filter>
 				<Filter
@@ -314,25 +298,9 @@
 							>
 						</File>
 					</Filter>
-					<Filter
-						Name="Manual"
-						>
-						<File
-							RelativePath=".\_Source_my\Source\Manual.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\_Source_my\Source\Manual.h"
-							>
-						</File>
-					</Filter>
 				</Filter>
 				<Filter
 					Name="FSW"
-					>
-				</Filter>
-				<Filter
-					Name="Com"
 					>
 				</Filter>
 			</Filter>

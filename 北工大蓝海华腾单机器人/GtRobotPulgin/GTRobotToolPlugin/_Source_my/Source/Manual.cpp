@@ -36,9 +36,13 @@ short ManualOffset::ManSetOffsetY(short Dir){
 	if(ManOffsetStatus == true){
 		if     (Dir == 0){ManOffsetSumNow[1] = ManOffsetSumNow[1] + ManOffsetStep;}
 		else if(Dir == 1){ManOffsetSumNow[1] = ManOffsetSumNow[1] - ManOffsetStep;}
+	
+		ManOffsetRela[1] = ManOffsetSumNow[1] - ManOffsetSumLast[1];
+		ManOffsetSumLast[1] = ManOffsetSumNow[1];
 	}
 	else{
 	   ManOffsetSumNow[1] = 0;
+	   ManOffsetRela[1] = 0;
 	}
 	return 0;
 }
@@ -47,28 +51,14 @@ short ManualOffset::ManSetOffsetZ(short Dir){
 	if(ManOffsetStatus == true){
 		if     (Dir == 0){ManOffsetSumNow[2] = ManOffsetSumNow[2] + ManOffsetStep;}
 		else if(Dir == 1){ManOffsetSumNow[2] = ManOffsetSumNow[2] - ManOffsetStep;}
-	}
-	else{ManOffsetSumNow[2] = 0;}
-	return 0;
-}
 
-short ManualOffset::ManGetOffsetY(double& value){
-	if(ManOffsetStatus == true){
-		ManOffsetRela[1] = ManOffsetSumNow[1] - ManOffsetSumLast[1];
-		ManOffsetSumLast[1] = ManOffsetSumNow[1];
-	}
-	else{ManOffsetRela[1] = 0;}
-	value = ManOffsetRela[1];
-	return 0;
-}
-
-short ManualOffset::ManGetOffsetZ(double& value){
-	if(ManOffsetStatus == true){
 		ManOffsetRela[2] = ManOffsetSumNow[2] - ManOffsetSumLast[2];
 		ManOffsetSumLast[2] = ManOffsetSumNow[2];
 	}
-	else{ManOffsetRela[2] = 0;}
-	value = ManOffsetRela[2];
+	else{
+		ManOffsetSumNow[2] = 0;
+		ManOffsetRela[2] = 0;
+	}
 	return 0;
 }
 
@@ -76,10 +66,12 @@ short  ManualOffset::ManGetOffsetYSum(double& value){
 	value = ManOffsetSumNow[1];
 	return 0;
 }
+
 short  ManualOffset::ManGetOffsetZSum(double& value){
 	value = ManOffsetSumNow[2];
 	return 0;
 }
+
 short ManualOffset::ManOffsetParameterReset(){
 	for (int i=0;i<8;i++){
 		ManOffsetSumNow[i] = 0;
@@ -88,6 +80,7 @@ short ManualOffset::ManOffsetParameterReset(){
 	}
 	return 0;
 }
+
 short   ManualOffset::ManualSetStep(double step){
 	ManOffsetStep = step;
 	return 0;

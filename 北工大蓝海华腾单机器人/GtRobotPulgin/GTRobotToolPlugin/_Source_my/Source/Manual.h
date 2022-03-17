@@ -26,10 +26,8 @@ public:
 	short   ManSetOffsetZ(short Dir);
 	short   ManGetOffsetYSum(double& value);
 	short   ManGetOffsetZSum(double& value);
-	short   ManGetOffsetY(double& value);
-	short   ManGetOffsetZ(double& value);
 
-	short ManOffsetParameterReset();
+	short   ManOffsetParameterReset();
 };
 
 #endif // MANUAL_H
