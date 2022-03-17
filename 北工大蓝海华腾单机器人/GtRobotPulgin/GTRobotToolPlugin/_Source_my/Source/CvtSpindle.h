@@ -6,6 +6,9 @@
 #include "_Source_support/HEADER/COM/plc_standard_class.h"
 #include "_Source_support/HEADER/COM/robot_comm_interface.h"
 
+#define NORMAL 1
+#define REVERSE -1
+
 class CvtSpindle{
 public:
 	CvtSpindle();
@@ -43,11 +46,12 @@ public:
 	unsigned short CvtSetDirctionData;//指令数据
 
 public:
+	short SpindleConnect();
 	short SpindleServorStatusSet(short mStatus);  //主轴伺服控制
 	short SpindleGetRealSpeed(int& mRealSpeed);   //主轴实时速度获取
 	short SpindleSetSpeed(int mSetSpeed);         //主轴速度控制
+private:
 	short SpindleSetDirection(short mDirection);  //设置主轴旋转方向
-	short SpindleConnect();
 };
 
 #endif // CVT_SPINDLE_H

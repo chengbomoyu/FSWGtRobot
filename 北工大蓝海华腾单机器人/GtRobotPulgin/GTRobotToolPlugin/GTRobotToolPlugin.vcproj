@@ -231,6 +231,22 @@
 						</File>
 					</Filter>
 				</Filter>
+				<Filter
+					Name="Sensor"
+					>
+					<Filter
+						Name="SRI"
+						>
+						<File
+							RelativePath=".\_Source_my\Interface\SensorSri.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\_Source_my\Interface\SensorSri.h"
+							>
+						</File>
+					</Filter>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Source"

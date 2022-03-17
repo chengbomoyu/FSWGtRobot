@@ -13,6 +13,5 @@ void BGDCvtSpindleConnect();
 void BGDCvtSpindleStatusSet(short status);
 void BGDCvtSpindleSetSpeed(int mSetSpeed);
 void BGDCvtSpindleGetSpeed(int& mRealSpeed);
-void BGDCvtSpindleSetDirection(short mDirection);
 
 #endif // SPINDLE_INTERFACE_H

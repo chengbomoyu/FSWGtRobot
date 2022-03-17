@@ -1,5 +1,5 @@
 #include "SpindleInterface.h"
-#include "_Source_my/Source/Spindle.h"
+#include "_Source_my/Source/CvtSpindle.h"
 
 static CvtSpindle *mCvtSpindle = NULL;
 
@@ -12,7 +12,7 @@ void BGDCvtSpindleDeInit(){
 }
 void BGDCvtSpindleModebusLoopRun(){
 	if(mCvtSpindle->SpindleComStatus==1){
-		mCvtSpindle->CvtModebusRtu.loopRun();
+		mCvtSpindle->CvtModebusRtu->loopRun();
 	}
 }
 
@@ -32,6 +32,3 @@ void BGDCvtSpindleGetSpeed(int& mRealSpeed){
 	mCvtSpindle->SpindleGetRealSpeed(mRealSpeed);
 }
 
-void BGDCvtSpindleSetDirection(short mDirection){
-	mCvtSpindle->SpindleSetDirection(mDirection);
-}

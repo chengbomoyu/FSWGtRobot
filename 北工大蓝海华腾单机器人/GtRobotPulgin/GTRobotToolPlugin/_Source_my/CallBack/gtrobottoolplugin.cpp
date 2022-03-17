@@ -13,23 +13,30 @@
 #include "_Source_my/Interface/SpindleInterface.h"
 #include "_Source_my/Interface/OffsetInterface.h"
 #include "_Source_my/Interface/OffsetInterfaceEx.h"
+#include "_Source_my/Interface/SensorSri.h"
 
 FSW::FSW(QWidget *parent){
 	ui.setupUi(this);
 	this->FSWHmiVarInit(); //HMI变量的初始化
  
 	ConnectSpindleSignalSlots(); //连接电主轴槽函数
-	ConnectOffsetSignalSlots();	 //连接动态偏移槽函数
-	
-	BGDOffsetInit();                  //动态偏移的初始化
-	BGDCvtSpindleInit();              //电主轴的初始化
+	BGDCvtSpindleInit();         //电主轴的初始化
+	BGDCvtSpindleConnect();      //连接蓝海华腾电主轴
 
+	ConnectSensorSignalSlots(); //连接传感器槽函数
+	BGDSRIInit();               //传感器初始化
+
+	ConnectOffsetSignalSlots();	 //连接动态偏移槽函数
+	BGDOffsetInit();                  //动态偏移的初始化
 	BGDFswMartixUpdate(hmi_fwsmartix);//传递系数矩阵
 	
 	RegisterPLCLoopRun();             //注册PLC循环函数
+
+
 }
 
 FSW::~FSW(){
+	BGDSRIDeinit();       //回收传感器的内存
 	BGDOffsetDeinit();    //回收动态偏移的内存
 	BGDCvtSpindleDeInit();//回收电主轴的内存
 }
@@ -47,7 +54,7 @@ void FSW::FSWHmiVarInit(){
 	this->OffsetManSumZ = 0;  //手动修正Z总量
 	this->OffsetManStep = 0;  //手动修正步距
 
-	this->SriConnectSetStatus = false; //连接状态   0关闭连接 1开启连接
+	this->SriConnectSetStatus = false; //连接状态     0关闭连接 1开启连接
 	this->SriAskStatus = false;        //是否开启问询
 	this->SriOffsetStatus = false;     //力修正状态   0关闭修正 1开启修正
 	this->SriConnectStatusNow = 0;     //问询连接状态
@@ -167,7 +174,6 @@ void FSW::RegisterPLCLoopRun(){
 }
 
 void FSW::ConnectSpindleSignalSlots(){
-	connect(ui.pbSpindleConnect,SIGNAL(clicked()),this,SLOT(onpbpbSpindleConnect()));
 	connect(ui.mpushbutton_spindle_on,SIGNAL(clicked()),this,SLOT(onpbtnclicked_mpushbutton_spindle_on()));
 	connect(ui.mpushbutton_spindle_off,SIGNAL(clicked()),this,SLOT(onpbtnclicked_mpushbutton_spindle_off()));
 	connect(ui.mpushbutton_spindle_speed_up100,SIGNAL(clicked()),this,SLOT(onpbtnclicked_mpushbutton_spindle_speed_up100()));
@@ -175,8 +181,7 @@ void FSW::ConnectSpindleSignalSlots(){
 }
 
 void FSW::ConnectOffsetSignalSlots(){
-	connect(ui.checkbox_rsi_on,SIGNAL(clicked()),this,SLOT(oncheckboxclicked_checkbox_rsi_on()));
-	connect(ui.checkbox_rsi_off,SIGNAL(clicked()),this,SLOT(oncheckboxclicked_checkbox_rsi_off()));
+	connect(ui.mpushbutton_offset_status_set,SIGNAL(clicked()),this,SLOT(onpbtnclicked_mpushbutton_offset_status_set()));
 	
 	connect(ui.mpushbutton_rsi_man_step_up,SIGNAL(clicked()),this,SLOT(onpbtnclicked_mpushbutton_rsi_man_step_up()));
 	connect(ui.mpushbutton_rsi_man_step_down,SIGNAL(clicked()),this,SLOT(onpbtnclicked_mpushbutton_rsi_man_step_down()));
@@ -185,17 +190,18 @@ void FSW::ConnectOffsetSignalSlots(){
 	connect(ui.mpushbutton_rsi_man_z_up,SIGNAL(clicked()),this,SLOT(onpbtnclicked_mpushbutton_rsi_man_z_up()));
 	connect(ui.mpushbutton_rsi_man_z_down,SIGNAL(clicked()),this,SLOT(onpbtnclicked_mpushbutton_rsi_man_z_down()));
 
-	connect(ui.mcheckbox_sri_connect,SIGNAL(clicked()),this,SLOT(oncheckboxclicked_mcheckbox_sri_connect()));
-	connect(ui.mcheckbox_sri_disconnect,SIGNAL(clicked()),this,SLOT(oncheckboxclicked_mcheckbox_sri_disconnect()));
-	connect(ui.mcheckbox_sri_status_on,SIGNAL(clicked()),this,SLOT(oncheckboxclicked_mcheckbox_sri_status_on()));
-	connect(ui.mcheckbox_sri_status_off,SIGNAL(clicked()),this,SLOT(oncheckboxclicked_mcheckbox_sir_status_off()));
-	connect(ui.mcheckbox_sri_ask,SIGNAL(clicked()),this,SLOT(oncheckboxclicked_mcheckbox_sri_ask()));
-	connect(ui.mcheckbox_sri_stop,SIGNAL(clicked()),this,SLOT(oncheckboxclicked_mcheckbox_sri_stop()));
-	connect(ui.mpushbutton_sri_zero,SIGNAL(clicked()),this,SLOT(onpbtnclicked_mpushbutton_sri_zero()));
-
 	connect(ui.mpushbutton_sri_fzsetting_up,SIGNAL(clicked()),this,SLOT(onpbtnclicked_mpushbutton_sri_fzsetting_up()));
 	connect(ui.mpushbutton_sri_fzsetting_down,SIGNAL(clicked()),this,SLOT(onpbtnclicked_mpushbutton_sri_fzsetting_down()));
 }
+
+void FSW::ConnectSensorSignalSlots(){
+	connect(ui.mcheckbox_sri_connect,SIGNAL(clicked()),this,SLOT(oncheckboxclicked_mcheckbox_sri_connect()));
+	connect(ui.mcheckbox_sri_status_on,SIGNAL(clicked()),this,SLOT(oncheckboxclicked_mcheckbox_sri_status_on()));
+	connect(ui.mcheckbox_sri_ask,SIGNAL(clicked()),this,SLOT(oncheckboxclicked_mcheckbox_sri_ask()));
+	connect(ui.mpushbutton_sri_zero,SIGNAL(clicked()),this,SLOT(onpbtnclicked_mpushbutton_sri_zero()));
+
+}
+
 bool FSW::showFrame(){
 	this->show();
 	return true;
@@ -213,7 +219,6 @@ void FSW::FastTimerLoop(){
 }
 void FSW::GetSpindleParameters(){
 	BGDCvtSpindleGetSpeed(SpindleSpeedGet);
-	SpindleSpeedSet = SpindleSpeedSet;
 	SpindleGetStatus = SpindleSetStatus;
 	
 	switch(SpindleGetStatus){
@@ -233,7 +238,6 @@ void FSW::GetOffsetParameters(){
 	BGDRreadSriOffsetZ(SriCorrectSumZ);
 	BGDSriReadConnectStatus(SriConnectStatusNow);
 	BGDReadSriFz(SriFzNow);
-	SriFzSet = SriFzSet;
 
 	//0未连接1正常2异常3未采集
 	switch (SriConnectStatusNow){
@@ -242,7 +246,6 @@ void FSW::GetOffsetParameters(){
 		case 2:  ui.mlabel_sri_status_connect->setText("异常！");    break;
 		case 3:  ui.mlabel_sri_status_connect->setText("未采集");	 break;
 		default: ui.mlabel_sri_status_connect->setText("其他");     break;
-
 	}
 	ui.mlcdnumber_sri_Fz->display(SriFzNow);
 	ui.mlcdnumber_sri_fzsetting->display(SriFzSet);
@@ -272,9 +275,6 @@ bool FSW::saveLastTimeStatus(){
 void FSW::setPermission(short type){
 }
 
-void FSW::onpbpbSpindleConnect(){
-	BGDCvtSpindleConnect();
-}
 void FSW::onpbtnclicked_mpushbutton_spindle_on(){
 	SpindleSetStatus = SPINDLE_ON;
 	BGDCvtSpindleStatusSet(SpindleSetStatus);
@@ -291,35 +291,19 @@ void FSW::onpbtnclicked_mpushbutton_spindle_speed_down100(){
 	SpindleSpeedSet = SpindleSpeedSet-SPINDLE_SPEED_STEP;
 	BGDCvtSpindleSetSpeed(SpindleSpeedSet);
 }
-void FSW::oncheckboxclicked_checkbox_rsi_on(){
-	OffsetStatus = STATUS_ON;
-
-	ui.checkbox_rsi_off->setCheckState(Qt::Unchecked);
-	ui.mcheckbox_sri_status_on->setEnabled(true);
-	ui.mcheckbox_sri_status_off->setEnabled(true);
-	ui.mpushbutton_rsi_man_y_up->setEnabled(true);
-	ui.mpushbutton_rsi_man_y_down->setEnabled(true);
-	ui.mpushbutton_rsi_man_z_up->setEnabled(true);
-	ui.mpushbutton_rsi_man_z_down->setEnabled(true);
-
-	BGDOffsetVarRest();
-	BGDOffsetStatusSet(STATUS_ON);
-	BGDManualOffsetStatusSet(STATUS_ON);
-}
-
-void FSW::oncheckboxclicked_checkbox_rsi_off(){
-	OffsetStatus = STATUS_OFF;
-
-	ui.checkbox_rsi_on->setCheckState(Qt::Unchecked);
-	ui.mcheckbox_sri_status_on->setEnabled(false);
-	ui.mcheckbox_sri_status_off->setEnabled(false);
-	ui.mpushbutton_rsi_man_y_up->setEnabled(false);
-	ui.mpushbutton_rsi_man_y_down->setEnabled(false);
-	ui.mpushbutton_rsi_man_z_up->setEnabled(false);
-	ui.mpushbutton_rsi_man_z_down->setEnabled(false);
-
-	BGDOffsetStatusSet(STATUS_OFF);
-	BGDManualOffsetStatusSet(STATUS_OFF);
+void FSW::onpbtnclicked_mpushbutton_offset_status_set(){
+	if(OffsetStatus == STATUS_ON){
+		this->OffsetStatus = STATUS_OFF;
+		BGDOffsetStatusSet(STATUS_OFF);
+		BGDManualOffsetStatusSet(STATUS_OFF);
+	} 
+	else if(OffsetStatus == STATUS_OFF){
+		this->OffsetStatus = STATUS_ON;
+		BGDOffsetVarRest();
+		BGDOffsetStatusSet(STATUS_ON);
+		BGDManualOffsetStatusSet(STATUS_ON);
+	}
+	else{}
 }
 
 void FSW::onpbtnclicked_mpushbutton_rsi_man_step_up(){
@@ -350,41 +334,45 @@ void FSW::onpbtnclicked_mpushbutton_rsi_man_z_down(){
 }
 
 void FSW::oncheckboxclicked_mcheckbox_sri_connect(){
-	SriConnectSetStatus = STATUS_ON;
-	ui.mcheckbox_sri_disconnect->setCheckState(Qt::Unchecked);
-	ui.mcheckbox_sri_ask->setEnabled(true);
-	ui.mcheckbox_sri_stop->setEnabled(true);
-	BGDSriConnectSet(STATUS_ON);
+	if(SriConnectSetStatus == STATUS_ON){
+		SriConnectSetStatus = STATUS_OFF;
+		BGDSriConnectSet(STATUS_OFF);
+	}
+	else if(SriConnectSetStatus == STATUS_OFF){
+		SriConnectSetStatus = STATUS_ON;
+		BGDSriConnectSet(STATUS_ON);
+	}
+	else{}
 }
-void FSW::oncheckboxclicked_mcheckbox_sri_disconnect(){
-	SriConnectSetStatus = STATUS_OFF;
-	ui.mcheckbox_sri_connect->setCheckState(Qt::Unchecked);
-	ui.mcheckbox_sri_ask->setEnabled(false);
-	ui.mcheckbox_sri_stop->setEnabled(false);
-	BGDSriConnectSet(STATUS_OFF);
-}
+
 void FSW::onpbtnclicked_mpushbutton_sri_zero(){
 	BGDSriSetZero();
 }
+
 void FSW::oncheckboxclicked_mcheckbox_sri_ask(){
-	SriAskStatus = STATUS_ON;
-	ui.mcheckbox_sri_stop->setCheckState(Qt::Unchecked);
-	BGDSriSetAskStatus(STATUS_ON);
+	if(SriAskStatus == STATUS_ON){
+		SriAskStatus = STATUS_OFF;
+		BGDSriSetAskStatus(STATUS_OFF);
+	}
+	else if(SriAskStatus == STATUS_OFF){
+		SriAskStatus = STATUS_ON;
+		BGDSriSetAskStatus(STATUS_ON);
+	}
+	else{}
 }
-void FSW::oncheckboxclicked_mcheckbox_sri_stop(){
-	SriAskStatus = STATUS_OFF;
-	ui.mcheckbox_sri_ask->setCheckState(Qt::Unchecked);
-	BGDSriSetAskStatus(STATUS_OFF);
-}
+
 void FSW::oncheckboxclicked_mcheckbox_sri_status_on(){
-	SriOffsetStatus = STATUS_ON;
-	ui.mcheckbox_sri_status_off->setCheckState(Qt::Unchecked);
-	BGDSriSetStatus(STATUS_ON);
-}
-void FSW::oncheckboxclicked_mcheckbox_sir_status_off(){
-	SriOffsetStatus = STATUS_OFF;
-	ui.mcheckbox_sri_status_on->setCheckState(Qt::Unchecked);
-	BGDSriSetStatus(STATUS_OFF);
+	if(SriOffsetStatus == STATUS_ON){
+		SriOffsetStatus = STATUS_OFF;
+		ui.mpushbutton_offset_status_set->setText("偏移（开）");
+		BGDSriSetStatus(STATUS_OFF);
+	}
+	else if(SriOffsetStatus == STATUS_OFF){
+		SriOffsetStatus = STATUS_ON;
+		ui.mpushbutton_offset_status_set->setText("偏移（关）");
+		BGDSriSetStatus(STATUS_ON);
+	}
+	else{}
 }
 
 void FSW::onpbtnclicked_mpushbutton_sri_fzsetting_up(){

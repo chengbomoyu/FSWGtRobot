@@ -31,24 +31,24 @@ Q_OBJECT
 public:
 	FSW(QWidget *parent = 0);
 	~FSW();
+public:
 	void FSWHmiVarInit();				 //用于HMI变量的初始化
 	void keyPressEvent(QKeyEvent *event);//键盘事件
 public:
 	void RegisterPLCLoopRun();		  //注册PLC函数
 	void ConnectSpindleSignalSlots(); //注册电主轴的回调函数
 	void ConnectOffsetSignalSlots();  //注册动态偏移的回调函数
+	void ConnectSensorSignalSlots();  //注册传感器的回调函数
 public:
 	void GetSpindleParameters();//上行同步主轴信息
 	void GetOffsetParameters(); //上行同步动态偏移信息
 public slots:
-		void onpbpbSpindleConnect();
 		void onpbtnclicked_mpushbutton_spindle_on();
 		void onpbtnclicked_mpushbutton_spindle_off();
 		void onpbtnclicked_mpushbutton_spindle_speed_up100();
 		void onpbtnclicked_mpushbutton_spindle_speed_down100();
 
-		void oncheckboxclicked_checkbox_rsi_on();
-		void oncheckboxclicked_checkbox_rsi_off();
+		void onpbtnclicked_mpushbutton_offset_status_set();
 
 		void onpbtnclicked_mpushbutton_rsi_man_step_up();
 		void onpbtnclicked_mpushbutton_rsi_man_step_down();
@@ -58,11 +58,8 @@ public slots:
 		void onpbtnclicked_mpushbutton_rsi_man_z_down();
 
 		void oncheckboxclicked_mcheckbox_sri_connect();
-		void oncheckboxclicked_mcheckbox_sri_disconnect();
 		void oncheckboxclicked_mcheckbox_sri_ask();
-		void oncheckboxclicked_mcheckbox_sri_stop();
 		void oncheckboxclicked_mcheckbox_sri_status_on();
-		void oncheckboxclicked_mcheckbox_sir_status_off();
 		void onpbtnclicked_mpushbutton_sri_zero();
 		void onpbtnclicked_mpushbutton_sri_fzsetting_up();
 		void onpbtnclicked_mpushbutton_sri_fzsetting_down();

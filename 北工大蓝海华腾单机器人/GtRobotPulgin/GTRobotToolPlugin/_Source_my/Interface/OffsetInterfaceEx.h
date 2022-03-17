@@ -21,18 +21,8 @@ short BGDManualOffsetStepSet(double step);  //设定手动修正步距
 short BGDDoManOffsetY(short Dir);           //手动修正Y，0上，1下；
 short BGDDoManOffsetZ(short Dir);           //手动修正Z，0上，1下；
 
-
-short BGDSriConnectSet(bool status); //SRI建立连接
-short BGDSriReadConnectStatus(short& status);  //问询建立状态
-
-short BGDSriSetAskStatus(bool status);//开启问询
-short BGDSriSetZero();//设定零点
-short BGDReadSriFz(double& value);//问询Z值
-
-
 short BGDFswMartixUpdate(double Martix[][7]); //更新系数矩阵
 
-void BGDGetSriDataLoopRun();      //问询SRI数据
 void BGDGetManOffsetDataLoopRun();//问询人在回路数据
 void BGDDoOffsetLoopRun();        //进行动态偏移
 
