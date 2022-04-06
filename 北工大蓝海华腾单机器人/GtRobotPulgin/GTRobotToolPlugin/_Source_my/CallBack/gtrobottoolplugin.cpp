@@ -31,11 +31,9 @@ FSW::FSW(QWidget *parent){
 	BGDFswInit();	
 	
 	ConnectOffsetSignalSlots();	 //连接动态偏移槽函数
-	BGDOffsetInit();                  //动态偏移的初始化
+	BGDOffsetInit();             //动态偏移的初始化
 
-	RegisterPLCLoopRun();             //注册PLC循环函数
-
-
+	RegisterPLCLoopRun();        //注册PLC循环函数
 }
 
 FSW::~FSW(){

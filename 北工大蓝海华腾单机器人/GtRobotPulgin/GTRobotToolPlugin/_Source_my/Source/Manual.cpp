@@ -10,13 +10,10 @@
 #pragma comment(lib,"GTRobotDll")
 
 ManualOffset::ManualOffset(){
-
 	ManOffsetStatus = false;
-
 	ManOffsetSumNow = new double[8];    //手动本周期总和[8]
 	ManOffsetSumLast = new double[8];   //手动前周期总和[8]
 	ManOffsetRela = new double[8];      //本周期偏移的量[8]
-
 	ManOffsetStep = 0.1;
 }
 
@@ -36,7 +33,6 @@ short ManualOffset::ManSetOffsetY(short Dir){
 	if(ManOffsetStatus == true){
 		if     (Dir == 0){ManOffsetSumNow[1] = ManOffsetSumNow[1] + ManOffsetStep;}
 		else if(Dir == 1){ManOffsetSumNow[1] = ManOffsetSumNow[1] - ManOffsetStep;}
-	
 		ManOffsetRela[1] = ManOffsetSumNow[1] - ManOffsetSumLast[1];
 		ManOffsetSumLast[1] = ManOffsetSumNow[1];
 	}
@@ -51,7 +47,6 @@ short ManualOffset::ManSetOffsetZ(short Dir){
 	if(ManOffsetStatus == true){
 		if     (Dir == 0){ManOffsetSumNow[2] = ManOffsetSumNow[2] + ManOffsetStep;}
 		else if(Dir == 1){ManOffsetSumNow[2] = ManOffsetSumNow[2] - ManOffsetStep;}
-
 		ManOffsetRela[2] = ManOffsetSumNow[2] - ManOffsetSumLast[2];
 		ManOffsetSumLast[2] = ManOffsetSumNow[2];
 	}
@@ -61,7 +56,11 @@ short ManualOffset::ManSetOffsetZ(short Dir){
 	}
 	return 0;
 }
-
+short  ManualOffset::ManOffsetTransmitDone(){
+	ManOffsetRela[1] = 0;
+	ManOffsetRela[2] = 0;
+	return 0;
+}
 short  ManualOffset::ManGetOffsetYSum(double& value){
 	value = ManOffsetSumNow[1];
 	return 0;

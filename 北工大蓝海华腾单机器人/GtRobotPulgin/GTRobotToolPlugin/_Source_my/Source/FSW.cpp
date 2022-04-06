@@ -22,7 +22,21 @@ FSW::FSW(){
 	for(int i = 0; i< 11; i++){
 		FswOffsetMartix[i] = new double[7];
 	}
-	/********************************************/
+	/***************************************************************************************************************/
+	/*-------------------------------------------------------------------------------------------------------------*/
+	/*|-----------ForeSri|[+100%,+008%)||[+008%,+005%)||(+005%,+000%)||(+000%,-005%]||(-005%,-008%]||(-008%,-100%]|*/
+	/*|PointLaser--------|*************||*************||*************||*************||*************||*************|*/
+	/*|(+  ∞,+0.5)-------|(+0.80,+0.00)||(+0.80,+0.00)||(+0.80,+0.00)||(+0.80,+0.00)||(+0.80,+0.00)||(+0.80,+0.00)|*/
+	/*|(+0.5,+0.1)-------|(+0.20,-0.50)||(+0.20,-0.30)||(+0.20,+0.00)||(+0.20,+0.00)||(+0.20,+0.10)||(+0.20,+0.15)|*/
+	/*|(+0.1,+0.0)-------|(+0.00,-0.50)||(+0.00,-0.30)||(+0.00,+0.00)||(+0.00,+0.00)||(+0.00,+0.15)||(+0.00,+0.20)|*/
+	/*|(+0.0,-0.1)-------|(+0.00,-0.50)||(+0.00,-0.30)||(+0.00,+0.00)||(+0.00,+0.00)||(+0.00,+0.20)||(+0.00,+0.25)|*/
+	/*|(-0.1,-  ∞)-------|(-1.00,+0.00)||(-1.00,+0.00)||(-1.00,+0.00)||(-1.00,+0.00)||(-1.00,+0.00)||(-1.00,+0.00)|*/
+	/*-------------------------------------------------------------------------------------------------------------*/
+    /*Note:--------------------------------------------------------------------------------------------------------*/
+	/*FswOffsetMartix[(Laser,Force)]-------------------------------------------------------------------------------*/
+	/*(+  ∞,+0.5)---------([1,1] [2,1])||([1,2] [2,2])||([1,3] [2,3])||([1,4] [2,4])||([1,5] [2,5])||([1,6] [2,6]|)*/
+	/*-------------------------------------------------------------------------------------------------------------*/
+	/***************************************************************************************************************/
 	FswOffsetMartix[1][1] = 0.8;
 	FswOffsetMartix[1][2] = 0.8;
 	FswOffsetMartix[1][3] = 0.8;
@@ -30,47 +44,26 @@ FSW::FSW(){
 	FswOffsetMartix[1][5] = 0.8;
 	FswOffsetMartix[1][6] = 0.8;
 	/********************************************/
-	FswOffsetMartix[3][1] = 0.2;
-	FswOffsetMartix[3][2] = 0.2;
-	FswOffsetMartix[3][3] = 0.2;
-	FswOffsetMartix[3][4] = 0.2;
-	FswOffsetMartix[3][5] = 0.2;
-	FswOffsetMartix[3][6] = 0.2;
+	FswOffsetMartix[3][1] = 0.2;FswOffsetMartix[4][1] = -0.5;
+	FswOffsetMartix[3][2] = 0.2;FswOffsetMartix[4][2] = -0.3;
+	FswOffsetMartix[3][3] = 0.2;FswOffsetMartix[4][3] = 0;
+	FswOffsetMartix[3][4] = 0.2;FswOffsetMartix[4][4] = 0;
+	FswOffsetMartix[3][5] = 0.2;FswOffsetMartix[4][5] = 0.1;
+	FswOffsetMartix[3][6] = 0.2;FswOffsetMartix[4][6] = 0.15;
 	/********************************************/
-	FswOffsetMartix[4][1] = -0.5;
-	FswOffsetMartix[4][2] = -0.3;
-	FswOffsetMartix[4][3] = 0;
-	FswOffsetMartix[4][4] = 0;
-	FswOffsetMartix[4][5] = 0.1;
-	FswOffsetMartix[4][6] = 0.15;
+	FswOffsetMartix[5][1] = 0;FswOffsetMartix[6][1] = -0.5;
+	FswOffsetMartix[5][2] = 0;FswOffsetMartix[6][2] = -0.3;
+	FswOffsetMartix[5][3] = 0;FswOffsetMartix[6][3] = 0;
+	FswOffsetMartix[5][4] = 0;FswOffsetMartix[6][4] = 0;
+	FswOffsetMartix[5][5] = 0;FswOffsetMartix[6][5] = 0.15;
+	FswOffsetMartix[5][6] = 0;FswOffsetMartix[6][6] = 0.2;
 	/********************************************/
-	FswOffsetMartix[5][1] = 0;
-	FswOffsetMartix[5][2] = 0;
-	FswOffsetMartix[5][3] = 0;
-	FswOffsetMartix[5][4] = 0;
-	FswOffsetMartix[5][5] = 0;
-	FswOffsetMartix[5][6] = 0;
-	/********************************************/
-	FswOffsetMartix[6][1] = -0.5;
-	FswOffsetMartix[6][2] = -0.3;
-	FswOffsetMartix[6][3] = 0;
-	FswOffsetMartix[6][4] = 0;
-	FswOffsetMartix[6][5] = 0.15;
-	FswOffsetMartix[6][6] = 0.2;
-	/********************************************/
-	FswOffsetMartix[7][1] = 0;
-	FswOffsetMartix[7][2] = 0;
-	FswOffsetMartix[7][3] = 0;
-	FswOffsetMartix[7][4] = 0;
-	FswOffsetMartix[7][5] = 0;
-	FswOffsetMartix[7][6] = 0;
-	/********************************************/
-	FswOffsetMartix[8][1] = -0.5;
-	FswOffsetMartix[8][2] = -0.3;
-	FswOffsetMartix[8][3] = 0;
-	FswOffsetMartix[8][4] = 0;
-	FswOffsetMartix[8][5] = 0.2;
-	FswOffsetMartix[8][6] = 0.25;
+	FswOffsetMartix[7][1] = 0;FswOffsetMartix[8][1] = -0.5;
+	FswOffsetMartix[7][2] = 0;FswOffsetMartix[8][2] = -0.3;
+	FswOffsetMartix[7][3] = 0;FswOffsetMartix[8][3] = 0;
+	FswOffsetMartix[7][4] = 0;FswOffsetMartix[8][4] = 0;
+	FswOffsetMartix[7][5] = 0;FswOffsetMartix[8][5] = 0.2;
+	FswOffsetMartix[7][6] = 0;FswOffsetMartix[8][6] = 0.25;
 	/********************************************/
 	FswOffsetMartix[9][1] = -1;
 	FswOffsetMartix[9][2] = -1;
@@ -98,6 +91,67 @@ short FSW::PointLaserControlStatusSet(bool status){
 	return 0;
 }
 
+short FSW::FswControlComputeOnlyForce(){
+	/****************************************************************************************************/
+	/*--------------------------------------------------------------------------------------------------*/
+	/*|ForeSri|[+100%,+008%)||[+008%,+005%)||(+005%,+000%)||(+000%,-005%]||(-005%,-008%]||(-008%,-100%]|*/
+	/*|-------|***(-0.50)***||***(-0.30)***||***(+0.00)***||***(+0.00)***||***(+0.10)***||***(+0.15)***|*/
+	/*--------------------------------------------------------------------------------------------------*/
+	/****************************************************************************************************/
+	double SRIFZ;
+	BGDReadSriFz(SRIFZ);
+	if(ForceControlStatus == true){
+		if(SRIFZ > dValueSetFz + (dValueSetFz * 0.08)) 
+			ForceOffsetRela = -0.5 * ForceControlRatio;
+		else if(SRIFZ <= dValueSetFz +(dValueSetFz * 0.08) && 
+			    SRIFZ >  dValueSetFz +(dValueSetFz * 0.05)) 
+			ForceOffsetRela = -0.3 * ForceControlRatio;
+		else if(SRIFZ <= dValueSetFz +(dValueSetFz * 0.05) && 
+			    SRIFZ >  dValueSetFz +(dValueSetFz * 0)) 
+			ForceOffsetRela = 0 * ForceControlRatio;
+		else if(SRIFZ <= dValueSetFz +(dValueSetFz * 0) && 
+			    SRIFZ >  dValueSetFz -(dValueSetFz * 0.05)) 
+			ForceOffsetRela = 0 * ForceControlRatio;
+		else if(SRIFZ <= dValueSetFz -(dValueSetFz * 0.05) && 
+			    SRIFZ >  dValueSetFz -(dValueSetFz * 0.08)) 
+			ForceOffsetRela = 0.1 * ForceControlRatio;
+		else if(SRIFZ <= dValueSetFz -(dValueSetFz * 0.08)) 
+			ForceOffsetRela = 0.15 * ForceControlRatio;
+		else 
+			ForceOffsetRela = 0;
+	}
+	PointPlaserOffsetRela = 0;
+	FswOffsetRelaData = ForceOffsetRela + PointPlaserOffsetRela;
+	return 0;
+}
+short FSW::FswControlComputeOnlyLaser(){
+	/****************************************************************************************/
+	/*--------------------------------------------------------------------------------------*/
+	/*|LaserPoint|[+   ∞,+0.50)||[+0.50,+0.10)||(+0.10,+0.00)||(+0.00,-0.10]||(-0.10,-   ∞]|*/
+	/*|----------|***(+0.80)***||***(+0.20)***||***(+0.00)***||***(+0.00)***||***(-1.00)***|*/
+	/*--------------------------------------------------------------------------------------*/
+	/****************************************************************************************/
+	if(PointLaserControlStatus == true){
+		if(tempdValuePlaserValtageNow > dValuePlaserValtageSet + 0.5)
+			PointPlaserOffsetRela = 0.8 * LaserPointControlRatio;             //偏移目标位置上方0.5mm以上
+		else if(tempdValuePlaserValtageNow <= dValuePlaserValtageSet + 0.5 && //在目标位置上方[0.1,0.5]mm范围之间
+			tempdValuePlaserValtageNow > dValuePlaserValtageSet + 0.1) 
+			PointPlaserOffsetRela = 0.2 * LaserPointControlRatio;
+		else if(tempdValuePlaserValtageNow <= dValuePlaserValtageSet + 0.1 && //在目标位置上方[0,0.1]mm范围之间
+			tempdValuePlaserValtageNow > dValuePlaserValtageSet + 0) 
+			PointPlaserOffsetRela = 0 * LaserPointControlRatio;  
+		else if(tempdValuePlaserValtageNow <= dValuePlaserValtageSet + 0 &&   //在目标位置下方[-0.1,0]mm范围之间
+			tempdValuePlaserValtageNow > dValuePlaserValtageSet - 0.1) 
+			PointPlaserOffsetRela = 0 * LaserPointControlRatio;                         
+		else if(tempdValuePlaserValtageNow <= dValuePlaserValtageSet - 0.1) 
+			PointPlaserOffsetRela = -1 * LaserPointControlRatio;              //在目标位置下方-0.1,-∞]mm以下
+		else 
+			PointPlaserOffsetRela = 0;
+	}
+	ForceOffsetRela = 0;
+	FswOffsetRelaData = ForceOffsetRela + PointPlaserOffsetRela;
+	return 0;
+}
 short FSW::FswControlCompute(){
 	double SRIFZ;
 	BGDReadSriFz(SRIFZ);
@@ -140,54 +194,8 @@ short FSW::FswControlCompute(){
 		else 
 			temp2 = 0;
 		/*******************************************/
-		PointPlaserOffsetRela = FswOffsetMartix[temp1][temp2] * 0.01;
-		ForceOffsetRela = FswOffsetMartix[temp1+1][temp2] * 0.01;
-	}
-	if(ForceControlStatus == true && PointLaserControlStatus == false){   //点激光生效，六维力不生效，位控
-		int temp1 = 0;
-		if(tempdValuePlaserValtageNow > dValuePlaserValtageSet + 0.5 && 
-		   tempdValuePlaserValtageNow < 4.9)  
-			temp1 = 1;//偏移目标位置上方0.5mm以上
-		else if(tempdValuePlaserValtageNow <= dValuePlaserValtageSet + 0.5 && //在目标位置上方[0.1,0.5]mm范围之间
-			    tempdValuePlaserValtageNow > dValuePlaserValtageSet + 0.1) 
-			temp1 = 3;
-		else if(tempdValuePlaserValtageNow <= dValuePlaserValtageSet + 0.1 && //在目标位置上方[0,0.1]mm范围之间
-			    tempdValuePlaserValtageNow > dValuePlaserValtageSet + 0) 
-			temp1 = 5;  
-		else if(tempdValuePlaserValtageNow <= dValuePlaserValtageSet + 0 &&   //在目标位置下方[-0.1,0]mm范围之间
-			    tempdValuePlaserValtageNow > dValuePlaserValtageSet - 0.1) 
-			temp1 = 7;                         
-		else if(tempdValuePlaserValtageNow <= dValuePlaserValtageSet - 0.1) 
-			temp1 = 9;                            //在目标位置下方-0.1,-5]mm以下
-		else 
-			temp1 = 10;
-		/*******************************************/
-		PointPlaserOffsetRela = FswOffsetMartix[temp1][1] * 0.01;
-		ForceOffsetRela = 0;
-	}
-	if(ForceControlStatus == false && PointLaserControlStatus == true){ //点激光不生效，六维力生效，力控
-		int temp2=0;
-		if(SRIFZ > dValueSetFz + (dValueSetFz * 0.08)) 
-			temp2 = 1;
-		else if(SRIFZ <= dValueSetFz +(dValueSetFz * 0.08) && 
-			    SRIFZ > dValueSetFz +(dValueSetFz * 0.05)) 
-			temp2 = 2;
-		else if(SRIFZ <= dValueSetFz +(dValueSetFz * 0.05) && 
-			    SRIFZ > dValueSetFz +(dValueSetFz * 0)) 
-			temp2 = 3;
-		else if(SRIFZ <= dValueSetFz +(dValueSetFz * 0) && 
-			    SRIFZ > dValueSetFz -(dValueSetFz * 0.05)) 
-			temp2 = 4;
-		else if(SRIFZ <= dValueSetFz -(dValueSetFz * 0.05) && 
-			    SRIFZ > dValueSetFz -(dValueSetFz * 0.08)) 
-			temp2 = 5;
-		else if(SRIFZ <= dValueSetFz -(dValueSetFz * 0.08)) 
-			temp2 = 6;
-		else 
-			temp2 = 0;
-		/*******************************************/
-		ForceOffsetRela = FswOffsetMartix[4][temp2] * 0.01; 
-		PointPlaserOffsetRela = 0;
+		PointPlaserOffsetRela = FswOffsetMartix[temp1][temp2] * LaserPointControlRatio;
+		ForceOffsetRela = FswOffsetMartix[temp1+1][temp2] * ForceControlRatio;
 	}
 	if (ForceControlStatus == false && PointLaserControlStatus == false){      
 		ForceOffsetRela = 0;

@@ -40,11 +40,10 @@ short OffsetEx::OffsetDoOffset(){
 		BGDFswOffsetDataGet(fswoffset);
 		OffsetRela[1] = mManualOffset->ManOffsetRela[1];
 		OffsetRela[2] = mManualOffset->ManOffsetRela[2] + fswoffset;
+		mManualOffset->ManOffsetTransmitDone();
 		GTR_SetOffsetRelativeValue(OffsetRela);
 		OffsetSumValue[1] = mManualOffset->ManOffsetSumNow[1];
 		OffsetSumValue[2] = mManualOffset->ManOffsetSumNow[2] + fswoffset;
-		mManualOffset->ManOffsetRela[1] = 0;
-		mManualOffset->ManOffsetRela[2] = 0;
 	}
 	return 0;
 }

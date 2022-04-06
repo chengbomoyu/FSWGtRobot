@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'fsw.ui'
 **
-** Created: Thu Mar 17 21:50:42 2022
+** Created: Wed Apr 6 18:11:04 2022
 **      by: Qt User Interface Compiler version 4.7.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -426,7 +426,7 @@ public:
         checkBox->setEnabled(false);
         checkBox->setFont(font1);
         checkBox->setCheckable(true);
-        checkBox->setChecked(false);
+        checkBox->setChecked(true);
 
         gridLayout_6->addWidget(checkBox, 1, 1, 1, 1);
 
@@ -434,7 +434,7 @@ public:
         checkBox_2->setObjectName(QString::fromUtf8("checkBox_2"));
         checkBox_2->setEnabled(false);
         checkBox_2->setFont(font1);
-        checkBox_2->setChecked(false);
+        checkBox_2->setChecked(true);
 
         gridLayout_6->addWidget(checkBox_2, 1, 2, 1, 1);
 

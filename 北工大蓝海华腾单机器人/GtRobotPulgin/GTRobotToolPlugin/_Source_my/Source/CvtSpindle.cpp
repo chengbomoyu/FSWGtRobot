@@ -124,7 +124,7 @@ short CvtSpindle::SpindleSetDirection(short mDirection){
 	else if(SpindleComStatus == 1){
 		unsigned short data_right = 0x0000;
 		unsigned short data_left = 0x0001;
-		switch SpindleDirection{
+		switch (SpindleDirection){
 			case NORMAL:  CvtSetDirectionSModbusRtuCmdEx.p_data = &data_right; break;
 			case REVERSE: CvtSetDirectionSModbusRtuCmdEx.p_data = &data_left;  break;
 		}

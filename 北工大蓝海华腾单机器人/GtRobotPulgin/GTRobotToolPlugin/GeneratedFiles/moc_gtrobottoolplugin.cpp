@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'gtrobottoolplugin.h'
 **
-** Created: Thu Mar 17 21:50:43 2022
+** Created: Wed Apr 6 18:11:05 2022
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.7.3)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -36,16 +36,16 @@ static const uint qt_meta_data_FSW[] = {
       84,    4,    4,    4, 0x0a,
      132,    4,    4,    4, 0x0a,
      182,    4,    4,    4, 0x0a,
-     228,    4,    4,    4, 0x0a,
-     272,    4,    4,    4, 0x0a,
-     318,    4,    4,    4, 0x0a,
-     359,    4,    4,    4, 0x0a,
-     402,    4,    4,    4, 0x0a,
-     443,    4,    4,    4, 0x0a,
-     486,    4,    4,    4, 0x0a,
-     528,    4,    4,    4, 0x0a,
-     566,    4,    4,    4, 0x0a,
-     610,    4,    4,    4, 0x0a,
+     224,    4,    4,    4, 0x0a,
+     262,    4,    4,    4, 0x0a,
+     299,    4,    4,    4, 0x0a,
+     345,    4,    4,    4, 0x0a,
+     389,    4,    4,    4, 0x0a,
+     435,    4,    4,    4, 0x0a,
+     476,    4,    4,    4, 0x0a,
+     519,    4,    4,    4, 0x0a,
+     560,    4,    4,    4, 0x0a,
+     603,    4,    4,    4, 0x0a,
      647,    4,    4,    4, 0x0a,
      692,    4,    4,    4, 0x0a,
 
@@ -57,6 +57,9 @@ static const char qt_meta_stringdata_FSW[] = {
     "onpbtnclicked_mpushbutton_spindle_off()\0"
     "onpbtnclicked_mpushbutton_spindle_speed_up100()\0"
     "onpbtnclicked_mpushbutton_spindle_speed_down100()\0"
+    "oncheckboxclicked_mcheckbox_sri_connect()\0"
+    "oncheckboxclicked_mcheckbox_sri_ask()\0"
+    "onpbtnclicked_mpushbutton_sri_zero()\0"
     "onpbtnclicked_mpushbutton_offset_status_set()\0"
     "onpbtnclicked_mpushbutton_rsi_man_step_up()\0"
     "onpbtnclicked_mpushbutton_rsi_man_step_down()\0"
@@ -64,10 +67,7 @@ static const char qt_meta_stringdata_FSW[] = {
     "onpbtnclicked_mpushbutton_rsi_man_y_down()\0"
     "onpbtnclicked_mpushbutton_rsi_man_z_up()\0"
     "onpbtnclicked_mpushbutton_rsi_man_z_down()\0"
-    "oncheckboxclicked_mcheckbox_sri_connect()\0"
-    "oncheckboxclicked_mcheckbox_sri_ask()\0"
     "oncheckboxclicked_mcheckbox_sri_status_on()\0"
-    "onpbtnclicked_mpushbutton_sri_zero()\0"
     "onpbtnclicked_mpushbutton_sri_fzsetting_up()\0"
     "onpbtnclicked_mpushbutton_sri_fzsetting_down()\0"
 };
@@ -107,17 +107,17 @@ int FSW::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         case 1: onpbtnclicked_mpushbutton_spindle_off(); break;
         case 2: onpbtnclicked_mpushbutton_spindle_speed_up100(); break;
         case 3: onpbtnclicked_mpushbutton_spindle_speed_down100(); break;
-        case 4: onpbtnclicked_mpushbutton_offset_status_set(); break;
-        case 5: onpbtnclicked_mpushbutton_rsi_man_step_up(); break;
-        case 6: onpbtnclicked_mpushbutton_rsi_man_step_down(); break;
-        case 7: onpbtnclicked_mpushbutton_rsi_man_y_up(); break;
-        case 8: onpbtnclicked_mpushbutton_rsi_man_y_down(); break;
-        case 9: onpbtnclicked_mpushbutton_rsi_man_z_up(); break;
-        case 10: onpbtnclicked_mpushbutton_rsi_man_z_down(); break;
-        case 11: oncheckboxclicked_mcheckbox_sri_connect(); break;
-        case 12: oncheckboxclicked_mcheckbox_sri_ask(); break;
-        case 13: oncheckboxclicked_mcheckbox_sri_status_on(); break;
-        case 14: onpbtnclicked_mpushbutton_sri_zero(); break;
+        case 4: oncheckboxclicked_mcheckbox_sri_connect(); break;
+        case 5: oncheckboxclicked_mcheckbox_sri_ask(); break;
+        case 6: onpbtnclicked_mpushbutton_sri_zero(); break;
+        case 7: onpbtnclicked_mpushbutton_offset_status_set(); break;
+        case 8: onpbtnclicked_mpushbutton_rsi_man_step_up(); break;
+        case 9: onpbtnclicked_mpushbutton_rsi_man_step_down(); break;
+        case 10: onpbtnclicked_mpushbutton_rsi_man_y_up(); break;
+        case 11: onpbtnclicked_mpushbutton_rsi_man_y_down(); break;
+        case 12: onpbtnclicked_mpushbutton_rsi_man_z_up(); break;
+        case 13: onpbtnclicked_mpushbutton_rsi_man_z_down(); break;
+        case 14: oncheckboxclicked_mcheckbox_sri_status_on(); break;
         case 15: onpbtnclicked_mpushbutton_sri_fzsetting_up(); break;
         case 16: onpbtnclicked_mpushbutton_sri_fzsetting_down(); break;
         default: ;

@@ -27,6 +27,7 @@ public:
 	short   ManGetOffsetYSum(double& value);
 	short   ManGetOffsetZSum(double& value);
 
+	short   ManOffsetTransmitDone();
 	short   ManOffsetParameterReset();
 };
 
