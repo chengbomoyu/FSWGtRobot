@@ -10,14 +10,13 @@
 #pragma comment(lib,"GTRobotDll")
 
 CvtSpindle::CvtSpindle(){
-	SpindleType = 1;           //主轴类型,0固高主轴 1其他主轴
 	SpindleStatus = 0;	       //主轴伺服状态,0下伺服 1上伺服 2开启 3关闭
 	SpindleComStatus = 0;      //主轴通讯状态,0未连接 1建立连接
 	SpindleSpeedSet = 0;       //主轴设定速度
 	SpindleSpeedReal = 0;      //主轴实时速度
-	SpindleAccaccelation = -1; //主轴加速度
-	SpindleDecelation = -1;	   //主轴减速度
 	SpindleDirection = -1;     //主轴方向,-1逆时针 0默认  1顺时针
+
+	CvtModebusRtu = new ModbusRTU();
 
 	CvtGetSpeedSModbusRtuCmdEx.is_finish = &CvtGetSpeedIsFinish;
 	CvtGetSpeedSModbusRtuCmdEx.is_timeout = &CvtGetSpeedTimeout;
@@ -45,6 +44,7 @@ CvtSpindle::CvtSpindle(){
 }
 
 CvtSpindle::~CvtSpindle(){
+	delete CvtModebusRtu;
 }
 
 short CvtSpindle::SpindleConnect(){

@@ -238,6 +238,14 @@
 				<Filter
 					Name="FSW"
 					>
+					<File
+						RelativePath=".\_Source_my\Interface\FswInterface.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\_Source_my\Interface\FswInterface.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter

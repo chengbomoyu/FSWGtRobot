@@ -1,5 +1,7 @@
 #include "_Source_my/Source/OffsetEx.h"
 #include "_Source_my/Source/Manual.h"
+#include "_Source_my/Interface/FswInterface.h"
+
 #include <QDebug>
 
 #include "gtrobot_backend_define.h"
@@ -34,11 +36,13 @@ short OffsetEx::OffsetStatusSet(bool status){
 short OffsetEx::OffsetDoOffset(){
 	double OffsetRela[8] = {0};
 	if(OffsetStatus == true){
+		double fswoffset = 0;
+		BGDFswOffsetDataGet(fswoffset);
 		OffsetRela[1] = mManualOffset->ManOffsetRela[1];
-		OffsetRela[2] = mManualOffset->ManOffsetRela[2];
+		OffsetRela[2] = mManualOffset->ManOffsetRela[2] + fswoffset;
 		GTR_SetOffsetRelativeValue(OffsetRela);
 		OffsetSumValue[1] = mManualOffset->ManOffsetSumNow[1];
-		OffsetSumValue[2] = mManualOffset->ManOffsetSumNow[2];
+		OffsetSumValue[2] = mManualOffset->ManOffsetSumNow[2] + fswoffset;
 		mManualOffset->ManOffsetRela[1] = 0;
 		mManualOffset->ManOffsetRela[2] = 0;
 	}

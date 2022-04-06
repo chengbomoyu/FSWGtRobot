@@ -14,6 +14,7 @@
 #include "_Source_my/Interface/OffsetInterface.h"
 #include "_Source_my/Interface/OffsetInterfaceEx.h"
 #include "_Source_my/Interface/SensorSri.h"
+#include "_Source_my/Interface/FswInterface.h"
 
 FSW::FSW(QWidget *parent){
 	ui.setupUi(this);
@@ -26,11 +27,12 @@ FSW::FSW(QWidget *parent){
 	ConnectSensorSignalSlots(); //连接传感器槽函数
 	BGDSRIInit();               //传感器初始化
 
+	ConnectFswTecSignalSlots();
+	BGDFswInit();	
+	
 	ConnectOffsetSignalSlots();	 //连接动态偏移槽函数
 	BGDOffsetInit();                  //动态偏移的初始化
 
-	//ConnectFswTecSignalSlots();
-	
 	RegisterPLCLoopRun();             //注册PLC循环函数
 
 
@@ -39,6 +41,7 @@ FSW::FSW(QWidget *parent){
 FSW::~FSW(){
 	BGDCvtSpindleDeInit();//回收电主轴的内存
 	BGDSRIDeinit();       //回收传感器的内存
+	BGDFswDeinit();
 	BGDOffsetDeinit();    //回收动态偏移的内存
 }
 void FSW::FSWHmiVarInit(){
@@ -84,12 +87,12 @@ void FSW::keyPressEvent(QKeyEvent *event){
 			break;
 		case Qt::Key_7:
 			SriFzSet = SriFzSet + 100;
-			//BGDSriSetFz(SriFzSet);
+			BGDForceControlSetFz(SriFzSet);
 			break;
 		case Qt::Key_4:
 			SriFzSet = SriFzSet - 100;
 			if(SriFzSet <= 0) SriFzSet = 0;
-			//BGDSriSetFz(SriFzSet);	
+			BGDForceControlSetFz(SriFzSet);	
 			break;
 		case Qt::Key_0:
 			OffsetManStep = OffsetManStep - 0.1;
@@ -178,7 +181,7 @@ void FSW::GetOffsetParameters(){
 	BGDRreadOffsetSumZ(OffsetSumZ);
 	BGDGetManOffsetSumY(OffsetManSumY);
 	BGDGetManOffsetSumZ(OffsetManSumZ);
-	//BGDRreadSriOffsetZ(SriCorrectSumZ);
+	BGDRreadFswOffsetZ(SriCorrectSumZ);
 	BGDSriReadConnectStatus(SriConnectStatusNow);
 	BGDReadSriFz(SriFzNow);
 
@@ -307,23 +310,23 @@ void FSW::oncheckboxclicked_mcheckbox_sri_ask(){
 void FSW::oncheckboxclicked_mcheckbox_sri_status_on(){
 	if(SriOffsetStatus == STATUS_ON){
 		SriOffsetStatus = STATUS_OFF;
-		//BGDSriSetStatus(STATUS_OFF);
+		BGDForceControlSetStatus(STATUS_OFF);
 	}
 	else if(SriOffsetStatus == STATUS_OFF){
 		SriOffsetStatus = STATUS_ON;
-		//BGDSriSetStatus(STATUS_ON);
+		BGDForceControlSetStatus(STATUS_ON);
 	}
 	else{}
 }
 
 void FSW::onpbtnclicked_mpushbutton_sri_fzsetting_up(){
 	SriFzSet = SriFzSet + FORCE_CTRL_MIN_STEP;
-	//BGDSriSetFz(SriFzSet);
+	BGDForceControlSetFz(SriFzSet);
 }
 void FSW::onpbtnclicked_mpushbutton_sri_fzsetting_down(){
 	SriFzSet = SriFzSet - FORCE_CTRL_MIN_STEP;
 	if(SriFzSet <= 0) SriFzSet = 0;
-	//BGDSriSetFz(SriFzSet);
+	BGDForceControlSetFz(SriFzSet);
 }
 
 Q_EXPORT_PLUGIN2("RobotHmi",FSW);

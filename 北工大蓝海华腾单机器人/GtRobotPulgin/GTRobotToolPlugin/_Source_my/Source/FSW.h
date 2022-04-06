@@ -18,7 +18,7 @@ public:
 	bool    ForceControlStatus;     //力控偏移开关
 	bool    PointLaserControlStatus;//点激光偏移开关
 
-	double*  FswOffsetMartix;       //力位控制混合矩阵
+	double**  FswOffsetMartix;       //力位控制混合矩阵
 
 	double  dValueSetFz;             //力控设定值大小
 	double  dValuePlaserValtageSet;  //光控设定值大小

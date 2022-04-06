@@ -14,13 +14,10 @@ public:
 	CvtSpindle();
 	~CvtSpindle();
 public:
-	short   SpindleType;          //主轴类型,0固高主轴 1其他主轴
 	short   SpindleStatus;	      //主轴伺服状态,0下伺服 1上伺服 2开启 3关闭
 	short   SpindleComStatus;     //主轴通讯状态,0未连接 1建立连接
 	int     SpindleSpeedSet;      //主轴设定速度
 	double  SpindleSpeedReal;     //主轴实时速度
-	double  SpindleAccaccelation; //主轴加速度
-	double  SpindleDecelation;	  //主轴减速度
 	short   SpindleDirection;     //主轴方向,-1逆时针 0默认 1顺时针
 public:
 	ModbusRTU* CvtModebusRtu;     //用于控制蓝海华腾电主轴ModbusRTU的实例

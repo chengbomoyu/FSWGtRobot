@@ -18,7 +18,10 @@ FSW::FSW(){
 	
 	tempdValuePlaserValtageNow = 0;
 
-	FswOffsetMartix = new double [11][7];
+	FswOffsetMartix = new double *[11];
+	for(int i = 0; i< 11; i++){
+		FswOffsetMartix[i] = new double[7];
+	}
 	/********************************************/
 	FswOffsetMartix[1][1] = 0.8;
 	FswOffsetMartix[1][2] = 0.8;
@@ -79,6 +82,9 @@ FSW::FSW(){
 }
 
 FSW::~FSW(){
+	for (int i = 0; i< 11; i++){
+		delete []FswOffsetMartix[i];
+	}
 	delete []FswOffsetMartix;
 }
 
@@ -194,7 +200,7 @@ short FSW::FswControlResults(double &FswOffsetData){
 	FswOffsetData = FswOffsetRelaData;
 	return 0;
 }
-short FSW::OffsetParamaterRest(){
+short FSW::FswTecParamaterRest(){
 	return 0;
 }
      	 			
