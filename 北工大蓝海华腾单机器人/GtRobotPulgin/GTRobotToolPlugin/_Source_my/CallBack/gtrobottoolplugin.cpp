@@ -22,7 +22,7 @@ FSW::FSW(QWidget *parent){
  
 	ConnectSpindleSignalSlots(); //连接电主轴槽函数
 	BGDCvtSpindleInit();         //电主轴的初始化
-	//BGDCvtSpindleConnect();      //连接蓝海华腾电主轴
+	BGDCvtSpindleConnect();      //连接蓝海华腾电主轴
 
 	ConnectSensorSignalSlots(); //连接传感器槽函数
 	BGDSRIInit();               //传感器初始化
@@ -41,7 +41,7 @@ FSW::FSW(QWidget *parent){
 FSW::~FSW(){
 	BGDCvtSpindleDeInit();//回收电主轴的内存
 	BGDSRIDeinit();       //回收传感器的内存
-	BGDFswDeinit();
+	BGDFswDeinit();       //回收搅拌摩擦焊工艺的内存
 	BGDOffsetDeinit();    //回收动态偏移的内存
 }
 void FSW::FSWHmiVarInit(){
@@ -50,7 +50,7 @@ void FSW::FSWHmiVarInit(){
 	this->SpindleGetStatus = 0;//获取的主轴状态
 	this->SpindleSetStatus = 0;//设定的主轴状态
 
-	this->OffsetStatus = false;   //修正状态
+	this->OffsetStatus = STATUS_OFF;   //修正状态
 	this->OffsetSumY = 0;     //修正Y总量
 	this->OffsetSumZ = 0;     //修正Z总量
 
@@ -58,10 +58,10 @@ void FSW::FSWHmiVarInit(){
 	this->OffsetManSumZ = 0;  //手动修正Z总量
 	this->OffsetManStep = 0.1;  //手动修正步距
 
-	this->SriConnectSetStatus = false; //连接状态     0关闭连接 1开启连接
-	this->SriAskStatus = false;        //是否开启问询
-	this->SriOffsetStatus = false;     //力修正状态   0关闭修正 1开启修正
-	this->SriConnectStatusNow = 0;     //问询连接状态
+	this->SriConnectSetStatus = STATUS_OFF; //连接状态
+	this->SriAskStatus = STATUS_OFF;        //是否开启问询
+	this->SriOffsetStatus = STATUS_OFF;     //力修正状态
+	this->SriConnectStatusNow = SENSOR_SRI_UNCONNECT;     //问询连接状态
 
 	this->SriCorrectSumZ = 0;      //力控Z方向修正总量
 	this->SriFzNow = 0;            //当前的顶锻力
@@ -114,7 +114,7 @@ void FSW::keyPressEvent(QKeyEvent *event){
 	}
 }
 void FSW::RegisterPLCLoopRun(){
-	//GTR_RegisterPlcLoop(1,BGDCvtSpindleModebusLoopRun);
+	GTR_RegisterPlcLoop(1,BGDCvtSpindleModebusLoopRun);
 	GTR_RegisterPlcLoop(2,BGDGetSriDataLoopRun);
 	GTR_RegisterPlcLoop(3,BGDDoOffsetLoopRun);
 }
@@ -136,16 +136,15 @@ void FSW::ConnectOffsetSignalSlots(){
 	connect(ui.mpushbutton_rsi_man_z_down,SIGNAL(clicked()),this,SLOT(onpbtnclicked_mpushbutton_rsi_man_z_down()));
 }
 void FSW::ConnectFswTecSignalSlots(){
+	connect(ui.mcheckbox_sri_status_on,SIGNAL(clicked()),this,SLOT(oncheckboxclicked_mcheckbox_sri_status_on()));
 	connect(ui.mpushbutton_sri_fzsetting_up,SIGNAL(clicked()),this,SLOT(onpbtnclicked_mpushbutton_sri_fzsetting_up()));
 	connect(ui.mpushbutton_sri_fzsetting_down,SIGNAL(clicked()),this,SLOT(onpbtnclicked_mpushbutton_sri_fzsetting_down()));
 }
 
 void FSW::ConnectSensorSignalSlots(){
 	connect(ui.mcheckbox_sri_connect,SIGNAL(clicked()),this,SLOT(oncheckboxclicked_mcheckbox_sri_connect()));
-	connect(ui.mcheckbox_sri_status_on,SIGNAL(clicked()),this,SLOT(oncheckboxclicked_mcheckbox_sri_status_on()));
-	connect(ui.mcheckbox_sri_ask,SIGNAL(clicked()),this,SLOT(oncheckboxclicked_mcheckbox_sri_ask()));
 	connect(ui.mpushbutton_sri_zero,SIGNAL(clicked()),this,SLOT(onpbtnclicked_mpushbutton_sri_zero()));
-
+	connect(ui.mcheckbox_sri_ask,SIGNAL(clicked()),this,SLOT(oncheckboxclicked_mcheckbox_sri_ask()));
 }
 
 bool FSW::showFrame(){
@@ -160,13 +159,13 @@ void FSW::SlowTimerLoop(){
 }
 
 void FSW::FastTimerLoop(){
-	//GetSpindleParameters();
+	GetSpindleParameters();
+	GetSensorSriParameters();
 	GetOffsetParameters();
 }
 void FSW::GetSpindleParameters(){
 	BGDCvtSpindleGetSpeed(SpindleSpeedGet);
 	SpindleGetStatus = SpindleSetStatus;
-	
 	switch(SpindleGetStatus){
 		case 0:	break;
 		case 1:	break;
@@ -176,24 +175,38 @@ void FSW::GetSpindleParameters(){
 	ui.mlcdnumber_spindle_set->display(SpindleSpeedSet);
 	ui.mlcdnumber_spindle_real->display(SpindleSpeedGet);
 }
+void FSW::GetSensorSriParameters(){
+	BGDSriReadConnectStatus(SriConnectStatusNow);
+	switch (SriConnectStatusNow){
+		case SENSOR_SRI_UNCONNECT:	   
+			ui.mlabel_sri_status_connect->setText("未连接");	 
+			break;
+		case SENSOR_SRI_DAQ:           
+			ui.mlabel_sri_status_connect->setText("采集中");
+			BGDReadSriFz(SriFzNow);
+			ui.mlcdnumber_sri_Fz->display(SriFzNow);
+			break;
+		case SENSOR_SRI_CLIENTERROR:
+			ui.mlabel_sri_status_connect->setText("异常2！"); 
+			break;
+		case SENSOR_SRI_CONNECTERROR:  
+			ui.mlabel_sri_status_connect->setText("异常！"); 
+			break;
+		case SENSOR_SRI_UNDAQ:         
+			ui.mlabel_sri_status_connect->setText("未采集");	 
+			break;
+		default:                       
+			ui.mlabel_sri_status_connect->setText("其他");    
+			break;
+	}
+}
 void FSW::GetOffsetParameters(){
 	BGDRreadOffsetSumY(OffsetSumY);
 	BGDRreadOffsetSumZ(OffsetSumZ);
 	BGDGetManOffsetSumY(OffsetManSumY);
 	BGDGetManOffsetSumZ(OffsetManSumZ);
 	BGDRreadFswOffsetZ(SriCorrectSumZ);
-	BGDSriReadConnectStatus(SriConnectStatusNow);
-	BGDReadSriFz(SriFzNow);
 
-	//0未连接1正常2异常3未采集
-	switch (SriConnectStatusNow){
-		case 0:	 ui.mlabel_sri_status_connect->setText("未连接");	 break;
-		case 1:  ui.mlabel_sri_status_connect->setText("采集中");	 break;
-		case 2:  ui.mlabel_sri_status_connect->setText("异常！");    break;
-		case 3:  ui.mlabel_sri_status_connect->setText("未采集");	 break;
-		default: ui.mlabel_sri_status_connect->setText("其他");     break;
-	}
-	ui.mlcdnumber_sri_Fz->display(SriFzNow);
 	ui.mlcdnumber_sri_fzsetting->display(SriFzSet);
 	ui.lcdnumber_rsi_dy->display(OffsetSumY);
 	ui.lcdnumber_rsi_dz->display(0-OffsetSumZ);
@@ -237,6 +250,7 @@ void FSW::onpbtnclicked_mpushbutton_spindle_speed_down100(){
 	SpindleSpeedSet = SpindleSpeedSet-SPINDLE_SPEED_STEP;
 	BGDCvtSpindleSetSpeed(SpindleSpeedSet);
 }
+
 void FSW::onpbtnclicked_mpushbutton_offset_status_set(){
 	if(OffsetStatus == STATUS_ON){
 		this->OffsetStatus = STATUS_OFF;
@@ -249,7 +263,6 @@ void FSW::onpbtnclicked_mpushbutton_offset_status_set(){
 		BGDOffsetStatusSet(STATUS_ON);
 		ui.mpushbutton_offset_status_set->setText("偏移（关）");
 	}
-	else{}
 }
 
 void FSW::onpbtnclicked_mpushbutton_rsi_man_step_up(){
@@ -288,7 +301,6 @@ void FSW::oncheckboxclicked_mcheckbox_sri_connect(){
 		SriConnectSetStatus = STATUS_ON;
 		BGDSriConnectSet(STATUS_ON);
 	}
-	else{}
 }
 
 void FSW::onpbtnclicked_mpushbutton_sri_zero(){
@@ -304,7 +316,6 @@ void FSW::oncheckboxclicked_mcheckbox_sri_ask(){
 		SriAskStatus = STATUS_ON;
 		BGDSriSetAskStatus(STATUS_ON);
 	}
-	else{}
 }
 
 void FSW::oncheckboxclicked_mcheckbox_sri_status_on(){
@@ -316,7 +327,6 @@ void FSW::oncheckboxclicked_mcheckbox_sri_status_on(){
 		SriOffsetStatus = STATUS_ON;
 		BGDForceControlSetStatus(STATUS_ON);
 	}
-	else{}
 }
 
 void FSW::onpbtnclicked_mpushbutton_sri_fzsetting_up(){

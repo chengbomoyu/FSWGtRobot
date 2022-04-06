@@ -615,7 +615,7 @@
             <bool>true</bool>
            </property>
            <property name="checked">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -633,7 +633,7 @@
             <string>光问询</string>
            </property>
            <property name="checked">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
           </widget>
          </item>

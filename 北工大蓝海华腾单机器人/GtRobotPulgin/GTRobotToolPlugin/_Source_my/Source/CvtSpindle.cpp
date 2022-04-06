@@ -56,6 +56,7 @@ short CvtSpindle::SpindleConnect(){
 	SpindleComStatus = 1;
 	return 0;
 }
+
 short CvtSpindle::SpindleServorStatusSet(short mStatus){
 	if(SpindleComStatus == 0){
 		return 1;
@@ -64,7 +65,7 @@ short CvtSpindle::SpindleServorStatusSet(short mStatus){
 		unsigned short data_on = 0x0001;
 		unsigned short data_off = 0x0000;
 		SpindleStatus = mStatus;
-		if(SpindleStatus==2){  
+		if(SpindleStatus==2){//主轴开启
 			CvtSetStatusSModbusRtuCmdEx.p_data = &data_on;
 		}
 		else if(SpindleStatus==3){//主轴关闭
@@ -99,7 +100,6 @@ short CvtSpindle::SpindleGetRealSpeed(int& mRealSpeed){
 
 short CvtSpindle::SpindleSetSpeed(int mSetSpeed){
 	SpindleSpeedSet = mSetSpeed;
-
 	if(SpindleComStatus == 0){
 		return 1;
 	}
@@ -108,7 +108,6 @@ short CvtSpindle::SpindleSetSpeed(int mSetSpeed){
 			SpindleSetDirection(NORMAL);
 		else
 			SpindleSetDirection(REVERSE);
-
 		unsigned short speed_hz = abs(SpindleSpeedSet);
 		CvtSetSpeedSModbusRtuCmdEx.p_data = &speed_hz;
 		CvtModebusRtu->addCmdEx(&CvtSetSpeedSModbusRtuCmdEx);
@@ -125,11 +124,9 @@ short CvtSpindle::SpindleSetDirection(short mDirection){
 	else if(SpindleComStatus == 1){
 		unsigned short data_right = 0x0000;
 		unsigned short data_left = 0x0001;
-		if(SpindleDirection==NORMAL){ //顺时针旋转
-			CvtSetDirectionSModbusRtuCmdEx.p_data = &data_right;
-		} 
-		else if(SpindleDirection==REVERSE){//逆时针旋转
-			CvtSetDirectionSModbusRtuCmdEx.p_data = &data_left;
+		switch SpindleDirection{
+			case NORMAL:  CvtSetDirectionSModbusRtuCmdEx.p_data = &data_right; break;
+			case REVERSE: CvtSetDirectionSModbusRtuCmdEx.p_data = &data_left;  break;
 		}
 		CvtModebusRtu->addCmdEx(&CvtSetDirectionSModbusRtuCmdEx);
 		return 0;

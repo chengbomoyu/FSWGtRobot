@@ -18,6 +18,12 @@
 #define SPINDLE_OFF 3
 #define SPINDLE_SPEED_STEP 100 //转速步距
 
+#define SENSOR_SRI_CONNECTERROR 3
+#define SENSOR_SRI_DAQ 2
+#define SENSOR_SRI_UNDAQ 0
+#define SENSOR_SRI_CLIENTERROR 1
+#define SENSOR_SRI_UNCONNECT 4
+
 #define MAN_OFFSET_MINS_TEP 0.1 //人在回路调整步距
 #define MAN_OFFSET_PD 0 //手动正方向
 #define MAN_OFFSET_ND 1 //手动负方向
@@ -27,7 +33,6 @@
 class FSW : public GtAppFrameInterface{
 Q_OBJECT
 	Q_INTERFACES(GtAppFrameInterface)
-
 public:
 	FSW(QWidget *parent = 0);
 	~FSW();
@@ -41,16 +46,20 @@ public:
 	void ConnectSensorSignalSlots();  //注册传感器的回调函数
 	void ConnectFswTecSignalSlots();
 public:
-	void GetSpindleParameters();//上行同步主轴信息
-	void GetOffsetParameters(); //上行同步动态偏移信息
+	void GetSpindleParameters();  //上行同步主轴信息
+	void GetSensorSriParameters();//上行同步SRI传感器信息
+	void GetOffsetParameters();   //上行同步动态偏移信息
 public slots:
 		void onpbtnclicked_mpushbutton_spindle_on();
 		void onpbtnclicked_mpushbutton_spindle_off();
 		void onpbtnclicked_mpushbutton_spindle_speed_up100();
 		void onpbtnclicked_mpushbutton_spindle_speed_down100();
 
-		void onpbtnclicked_mpushbutton_offset_status_set();
+		void oncheckboxclicked_mcheckbox_sri_connect();
+		void oncheckboxclicked_mcheckbox_sri_ask();
+		void onpbtnclicked_mpushbutton_sri_zero();
 
+		void onpbtnclicked_mpushbutton_offset_status_set();
 		void onpbtnclicked_mpushbutton_rsi_man_step_up();
 		void onpbtnclicked_mpushbutton_rsi_man_step_down();
 		void onpbtnclicked_mpushbutton_rsi_man_y_up();
@@ -58,23 +67,21 @@ public slots:
 		void onpbtnclicked_mpushbutton_rsi_man_z_up();
 		void onpbtnclicked_mpushbutton_rsi_man_z_down();
 
-		void oncheckboxclicked_mcheckbox_sri_connect();
-		void oncheckboxclicked_mcheckbox_sri_ask();
 		void oncheckboxclicked_mcheckbox_sri_status_on();
-		void onpbtnclicked_mpushbutton_sri_zero();
 		void onpbtnclicked_mpushbutton_sri_fzsetting_up();
 		void onpbtnclicked_mpushbutton_sri_fzsetting_down();
 
 protected:
 	QString getFrameName();
 	QString getVersion();
-	void FastTimerLoop();
-	void SlowTimerLoop();
 	bool readLastTimeStatus();
 	bool saveLastTimeStatus();
 	bool showFrame();
 	bool hideFrame();
 	void setPermission(short type);
+protected:
+	void FastTimerLoop();
+	void SlowTimerLoop();
 private:
 	Ui::FSWClass ui;
 private:

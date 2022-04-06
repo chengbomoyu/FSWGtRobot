@@ -25,7 +25,6 @@ public:
 	short   OffsetDoOffset();
 	short   GetOffsetSumY(double& value);
 	short   GetOffsetSumZ(double& value);
-
 };
 
 #endif // OFFSETEX_H
